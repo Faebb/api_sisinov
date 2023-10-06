@@ -4,4 +4,4 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\novedadController;
 
-Route::apiResource('/novedades', novedadController::class);
+Route::apiResource('/novedad', novedadController::class);
