@@ -13,10 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tp_novedad', function (Blueprint $table) {
-            $table->integer('T_Nov', true);
-            $table->string('Nombre_Tn', 50);
-            $table->string('descrip_Tn', 150);
+        Schema::create('arl', function (Blueprint $table) {
+            $table->tinyInteger('ID_arl', true);
+            $table->string('N_arl', 50)->unique('N_arl');
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tp_novedad');
+        Schema::dropIfExists('arl');
     }
 };

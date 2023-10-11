@@ -16,18 +16,20 @@ return new class extends Migration
         Schema::create('empresa', function (Blueprint $table) {
             $table->integer('id_e', true);
             $table->string('Nit_E', 15);
-            $table->string('Nom_E', 70);
-            $table->string('Eml_E', 50);
+            $table->string('Nom_E', 70)->unique('Nom_E');
+            $table->string('Eml_E', 50)->unique('Eml_E');
             $table->string('Nom_Rl', 40);
             $table->tinyInteger('ID_Doc')->index('fk_ID_Doc');
             $table->string('CC_Rl', 15);
-            $table->string('telefonoGeneral', 15);
+            $table->string('telefonoGeneral', 15)->unique('telefonoGeneral');
             $table->integer('Val_E');
             $table->string('Est_E', 3);
             $table->date('Fh_Afi');
             $table->date('fechaFinalizacion');
             $table->string('COD_SE', 15);
             $table->string('COD_AE', 15);
+
+            $table->unique(['ID_Doc', 'CC_Rl'], 'ID_Doc');
         });
     }
 

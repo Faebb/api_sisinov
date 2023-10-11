@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('asigna_vehiculo', function (Blueprint $table) {
-            $table->foreign(['id_ve'], 'asigna_vehiculo_ibfk_2')->references(['id_ve'])->on('vehiculo');
             $table->foreign(['id_em'], 'asigna_vehiculo_ibfk_1')->references(['id_em'])->on('empleado');
+            $table->foreign(['id_ve'], 'asigna_vehiculo_ibfk_2')->references(['id_ve'])->on('vehiculo');
         });
     }
 
@@ -27,8 +27,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('asigna_vehiculo', function (Blueprint $table) {
-            $table->dropForeign('asigna_vehiculo_ibfk_2');
             $table->dropForeign('asigna_vehiculo_ibfk_1');
+            $table->dropForeign('asigna_vehiculo_ibfk_2');
         });
     }
 };

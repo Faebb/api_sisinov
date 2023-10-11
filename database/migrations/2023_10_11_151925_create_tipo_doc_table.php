@@ -13,12 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('contacto_emergencia', function (Blueprint $table) {
-            $table->integer('ID_CEm', true);
-            $table->string('N_CoE', 40);
-            $table->string('Csag', 40)->nullable();
-            $table->integer('id_em')->index('fk_contacto_emergencia');
-            $table->string('T_CEm', 20)->nullable();
+        Schema::create('tipo_doc', function (Blueprint $table) {
+            $table->tinyInteger('ID_Doc', true);
+            $table->string('N_TDoc', 35)->unique('N_TDoc');
         });
     }
 
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contacto_emergencia');
+        Schema::dropIfExists('tipo_doc');
     }
 };

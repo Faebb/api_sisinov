@@ -33,6 +33,8 @@ return new class extends Migration
             $table->tinyInteger('id_ces')->index('empresa_ibfk_6');
             $table->tinyInteger('id_rh')->index('empresa_ibfk_2');
             $table->string('estado', 2);
+
+            $table->unique(['id_doc', 'documento'], 'id_doc');
         });
     }
 

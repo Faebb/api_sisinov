@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('user_rol', function (Blueprint $table) {
-            $table->foreign(['ID_rol'], 'user_rol_ibfk_2')->references(['ID_rol'])->on('rol');
             $table->foreign(['ID_log'], 'user_rol_ibfk_1')->references(['ID_log'])->on('login');
+            $table->foreign(['ID_rol'], 'user_rol_ibfk_2')->references(['ID_rol'])->on('rol');
         });
     }
 
@@ -27,8 +27,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('user_rol', function (Blueprint $table) {
-            $table->dropForeign('user_rol_ibfk_2');
             $table->dropForeign('user_rol_ibfk_1');
+            $table->dropForeign('user_rol_ibfk_2');
         });
     }
 };

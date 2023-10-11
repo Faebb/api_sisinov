@@ -13,10 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('login', function (Blueprint $table) {
-            $table->integer('ID_log', true);
-            $table->string('passw', 10);
-            $table->integer('id_em')->index('id_em');
+        Schema::create('eps', function (Blueprint $table) {
+            $table->tinyInteger('ID_eps', true);
+            $table->string('N_eps', 70)->unique('N_eps');
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('login');
+        Schema::dropIfExists('eps');
     }
 };

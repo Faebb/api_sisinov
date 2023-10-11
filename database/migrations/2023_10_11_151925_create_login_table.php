@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('eps', function (Blueprint $table) {
-            $table->tinyInteger('ID_eps', true);
-            $table->string('N_eps', 50);
+        Schema::create('login', function (Blueprint $table) {
+            $table->integer('ID_log', true);
+            $table->string('passw', 10);
+            $table->integer('id_em')->index('id_em');
+
+            $table->unique(['passw', 'id_em'], 'passw');
         });
     }
 
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('eps');
+        Schema::dropIfExists('login');
     }
 };

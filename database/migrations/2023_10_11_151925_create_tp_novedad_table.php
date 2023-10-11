@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('rol', function (Blueprint $table) {
-            $table->tinyInteger('ID_rol', true);
-            $table->string('N_rol', 20);
+        Schema::create('tp_novedad', function (Blueprint $table) {
+            $table->integer('T_Nov', true);
+            $table->string('Nombre_Tn', 50)->unique('Nombre_Tn');
+            $table->string('descrip_Tn', 150);
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rol');
+        Schema::dropIfExists('tp_novedad');
     }
 };

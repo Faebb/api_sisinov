@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tipo_doc', function (Blueprint $table) {
-            $table->tinyInteger('ID_Doc', true);
-            $table->string('N_TDoc', 35);
+        Schema::create('pensiones', function (Blueprint $table) {
+            $table->tinyInteger('ID_pens', true);
+            $table->string('N_pens', 50)->unique('N_pens');
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tipo_doc');
+        Schema::dropIfExists('pensiones');
     }
 };

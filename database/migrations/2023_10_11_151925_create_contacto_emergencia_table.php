@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('arl', function (Blueprint $table) {
-            $table->tinyInteger('ID_arl', true);
-            $table->string('N_arl', 50);
+        Schema::create('contacto_emergencia', function (Blueprint $table) {
+            $table->integer('ID_CEm', true);
+            $table->string('N_CoE', 40);
+            $table->string('Csag', 40)->nullable();
+            $table->integer('id_em')->index('fk_contacto_emergencia');
+            $table->string('T_CEm', 20)->nullable()->unique('T_CEm');
         });
     }
 
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('arl');
+        Schema::dropIfExists('contacto_emergencia');
     }
 };

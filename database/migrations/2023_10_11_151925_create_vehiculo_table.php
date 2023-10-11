@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('vehiculo', function (Blueprint $table) {
             $table->integer('id_ve', true);
-            $table->string('Matricula', 7);
+            $table->string('Matricula', 7)->unique('Matricula');
             $table->string('Cilindraje', 10);
             $table->year('Modelo')->nullable();
             $table->date('Fecha_Soat')->nullable();

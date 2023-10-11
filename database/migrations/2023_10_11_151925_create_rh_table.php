@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('rh', function (Blueprint $table) {
             $table->tinyInteger('ID_RH', true);
-            $table->string('T_RH', 50);
+            $table->string('T_RH', 50)->unique('T_RH');
         });
     }
 

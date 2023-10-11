@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('pensiones', function (Blueprint $table) {
-            $table->tinyInteger('ID_pens', true);
-            $table->string('N_pens', 50);
+        Schema::create('rol', function (Blueprint $table) {
+            $table->tinyInteger('ID_rol', true);
+            $table->string('N_rol', 20)->unique('N_rol');
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pensiones');
+        Schema::dropIfExists('rol');
     }
 };
