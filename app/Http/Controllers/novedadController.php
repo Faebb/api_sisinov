@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Novedad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Response;
 
 class novedadController extends Controller
 {
@@ -26,7 +25,7 @@ class novedadController extends Controller
                 ->join('empleado as em', 'novedad.id_em', '=', 'em.id_em')
                 ->leftJoin('sede as sede', 'novedad.ID_S', '=', 'sede.ID_S')
                 ->join('tp_novedad', 'novedad.T_Nov', '=', 'tp_novedad.T_Nov')
-                ->get();
+                ->get();    
 
             if ($novedades->isEmpty()) {
                 return [
