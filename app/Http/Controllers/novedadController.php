@@ -26,7 +26,7 @@ class novedadController extends Controller
                 ->join('empleado as em', 'novedad.id_em', '=', 'em.id_em')
                 ->leftJoin('sede as sede', 'novedad.ID_S', '=', 'sede.ID_S')
                 ->join('tp_novedad', 'novedad.T_Nov', '=', 'tp_novedad.T_Nov')
-                ->get();
+                ->get();    
 
             if ($novedades->isEmpty()) {
                 return [
