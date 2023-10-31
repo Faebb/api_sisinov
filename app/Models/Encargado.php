@@ -32,7 +32,8 @@ class Encargado extends Model
 		'N_En',
 		'tel1',
 		'tel2',
-		'tel3'
+		'tel3',
+		
 	];
 
 	public function encargado_estados()
