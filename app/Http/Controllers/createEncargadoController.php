@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Encargado;
 use App\Models\EncargadoEstado;
-use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;

@@ -8,19 +8,24 @@ use App\Http\Controllers\updateEncargadoEstController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\novedadController;
+use App\Http\Controllers\novedadCreateController;
 use App\Http\Controllers\readSedeController;
 use App\Http\Controllers\readTelSedecontroller;
 use App\Http\Controllers\readTipoDocController;
+use App\Http\Controllers\reporteController;
 use App\Http\Controllers\updateEmpresaController;
 use App\Http\Controllers\updateEncargadoController;
 use App\Http\Controllers\updateEstadoSedeController;
 use App\Http\Controllers\updateSedeController;
 
-Route::apiResource('/novedad', novedadController::class);
-//empresa
+//Novedad
+Route::group([], function(){
+    Route::post('/novedad', [novedadCreateController::class, 'createNovedadEvidencia']);
+})->name('Evidencia'); 
+
 Route::group([], function () {
     //metodos post
-    Route::post('fastempresa', [createEmpresaController::class, 'createFastEmpresa']);
+    Route::post('/fastempresa', [createEmpresaController::class, 'createFastEmpresa']);
     Route::post('/empresa', [createEmpresaController::class, 'createEmpresa']);
     Route::post('/sede', [createSedeController::class, 'createSede']);
     Route::post('/encargado', [createEncargadoController::class, 'createEncargado']);
@@ -41,3 +46,8 @@ Route::group([], function () {
     Route::put('encargado/{id}', [updateEncargadoController::class, 'updateEncargado']);
     Route::put('encargadoestado/{id}', [updateEncargadoEstController::class, 'updateEncargadoEst']);
 })->name('Empresa');
+
+//Reportes
+Route::group([], function () {
+    Route::get('/reporte-novedad', [reporteController::class, 'repnov']);
+})->name('Reporte');
