@@ -7,7 +7,7 @@ use App\Http\Controllers\createSedeController;
 use App\Http\Controllers\updateEncargadoEstController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\novedadController;
+use App\Http\Controllers\novedadReadController;
 use App\Http\Controllers\novedadCreateController;
 use App\Http\Controllers\readSedeController;
 use App\Http\Controllers\readTelSedecontroller;
@@ -20,7 +20,11 @@ use App\Http\Controllers\updateSedeController;
 
 //Novedad
 Route::group([], function(){
+    //metodos post
     Route::post('/novedad', [novedadCreateController::class, 'createNovedadEvidencia']);
+    //metods get
+    Route::get('/novedad', [novedadReadController::class, 'index']);
+    Route::get('/novedad/{id}', [novedadReadController::class, 'show']);
 })->name('Evidencia'); 
 
 Route::group([], function () {
