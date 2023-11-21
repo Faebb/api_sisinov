@@ -17,8 +17,8 @@ return new class extends Migration
             $table->integer('ID_En', true);
             $table->string('N_En', 40);
             $table->string('tel1', 15);
-            $table->string('tel2', 15);
-            $table->string('tel3', 15);
+            $table->string('tel2', 15)->nullable();
+            $table->string('tel3', 15)->nullable();
         });
     }
 
