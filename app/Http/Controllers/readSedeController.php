@@ -38,7 +38,10 @@ class readSedeController extends Controller
     public function show($id)
     {
         try {
-            $resultado = Sede::find($id);
+            $resultado = DB::table('sede')
+            ->where('id_e', $id)
+            ->select('ID_S', 'Dic_S', 'Sec_V', 'est_sed')
+            ->get();
 
             if ($resultado) {
                 return [

@@ -92,7 +92,7 @@ class createEmpresaController extends Controller
                     $encargadoModel->save();
                     $idEncargado = $encargadoModel->ID_En;
 
-                    //Insertar Encargado_Estado 
+                    //Insertar Encargado_Estado
                     $encargadoEstado = new EncargadoEstado([
                         'ID_En' => $idEncargado,
                         'ID_S' => $idSede,
@@ -103,10 +103,10 @@ class createEmpresaController extends Controller
             }
 
             DB::commit();
-            return response()->json(['message' => 'Empresa creada con éxito'], 201); // 201 Created
+            return response()->json(['error'=> false,'message' => 'Empresa creada con éxito'], 201); // 201 Created
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'Error al crear la empresa'], 500); // 500 Internal Server Error
+            return response()->json(['error'=>true, 'message' => 'Error al crear la empresa'], 500); // 500 Internal Server Error
         }
     }
 
@@ -173,7 +173,7 @@ class createEmpresaController extends Controller
             $encargadoModel->save();
             $idEncargado = $encargadoModel->ID_En;
 
-            //Insertar Encargado_Estado 
+            //Insertar Encargado_Estado
             $encargadoEstado = new EncargadoEstado([
                 'ID_En' => $idEncargado,
                 'ID_S' => $idSede,
@@ -184,10 +184,10 @@ class createEmpresaController extends Controller
 
 
             DB::commit();
-            return response()->json(['message' => 'Empresa creada con éxito'], 201); // 201 Created
+            return response()->json(['error'=> false, 'message' => 'Empresa creada con éxito'], 201); // 201 Created
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'Error al crear la empresa'], 500); // 500 Internal Server Error
+            return response()->json(['error'=> true, 'message' => 'Error al crear la empresa'], 500); // 500 Internal Server Error
         }
     }
 }
