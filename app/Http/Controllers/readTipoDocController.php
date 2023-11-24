@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\TipoDoc;
 use Illuminate\Http\Request;
-use PhpParser\Node\Scalar\Encapsed;
 
 class readTipoDocController extends Controller
 {

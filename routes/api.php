@@ -9,6 +9,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\novedadReadController;
 use App\Http\Controllers\novedadCreateController;
+use App\Http\Controllers\novedadCreateEvidenciaController;
+use App\Http\Controllers\novedadReadEmpleadoController;
+use App\Http\Controllers\novedadReadEvidenciaController;
+use App\Http\Controllers\novedadReadNovedadEmpresaController;
+use App\Http\Controllers\novedadReadNovedadSedeaController;
+use App\Http\Controllers\novedadReadTpNovedadController;
+use App\Http\Controllers\novedadUpdateTpNovedadController;
 use App\Http\Controllers\readSedeController;
 use App\Http\Controllers\readTelSedecontroller;
 use App\Http\Controllers\readTipoDocController;
@@ -21,10 +28,18 @@ use App\Http\Controllers\updateSedeController;
 //Novedad
 Route::group([], function(){
     //metodos post
-    Route::post('/novedad', [novedadCreateController::class, 'createNovedadEvidencia']);
+    Route::post('/novedad', [novedadCreateController::class, 'create']);
+    Route::post('/novedadevidencia', [novedadCreateEvidenciaController::class, 'create']);
     //metods get
     Route::get('/novedad', [novedadReadController::class, 'index']);
     Route::get('/novedad/{id}', [novedadReadController::class, 'show']);
+    Route::get('/tpnov', [novedadReadTpNovedadController::class, 'index']);
+    Route::get('/evidencia/{id}', [novedadReadEvidenciaController::class, 'show']);
+    Route::get('/novedadempresa', [novedadReadNovedadEmpresaController::class, 'index']);
+    Route::get('/novedadsede/{id}', [novedadReadNovedadSedeaController::class, 'show']);
+    Route::get('/novedadempleados', [novedadReadEmpleadoController::class, 'index']);
+    //metodos put
+    Route::put('/novedad/{id}', [novedadUpdateTpNovedadController::class, 'update']);
 })->name('Evidencia'); 
 
 Route::group([], function () {

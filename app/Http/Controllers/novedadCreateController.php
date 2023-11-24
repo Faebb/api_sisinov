@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Validator;
 
 class novedadCreateController extends Controller
 {
-    public function createNovedadEvidencia(Request $request){
+    public function create(Request $request)
+    {
         $data = $request->all();
 
         $validator = Validator::make($data, [
@@ -20,8 +21,7 @@ class novedadCreateController extends Controller
             'Des_Nov' => 'required|string|max:255',
             'id_em' => 'required|integer',
             'ID_S' => 'nullable|integer',
-            'evidencia' => 'required|array',
-            'evidencia.adjunto' => 'requird|string|max:255',
+            'adjuntos' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -43,17 +43,17 @@ class novedadCreateController extends Controller
             $novedad->save();
             $idNovedad = $novedad->ID_Nov;
 
-            foreach ($data['evidencia'] as $evidenciaData){
-                $evidencia = new Evidencium([
-                    'adjunto' => $evidenciaData['adjunto'],
-                    'ID_Nov' => $idNovedad
-                ]);
-                $evidencia->save();
-            }
+
+            $evidencia = new Evidencium([
+                'adjunto' => $data['adjuntos'],
+                'ID_Nov' => $idNovedad
+            ]);
+            $evidencia->save();
+
 
             DB::commit();
-            return response()->json(['message' => 'Noveddad creada con éxito'],201);
-        }catch (\Exception $e) {
+            return response()->json(['message' => 'Noveddad creada con éxito'], 201);
+        } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['message' => 'Error al crear la Novedad'], 500);
         }
