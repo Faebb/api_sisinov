@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class novedadCreateTpNovedadController extends Controller
 {
-    public function createTpNovedad (Request $request){
+    public function create (Request $request){
         $data = $request->all();
 
         $validator = Validator::make($data, [
