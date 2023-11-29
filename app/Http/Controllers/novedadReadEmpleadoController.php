@@ -11,7 +11,7 @@ class novedadReadEmpleadoController extends Controller
     {
         try {
             $resultado = DB::table('empleado')
-            ->select('id_em', DB::raw("CONCAT(n_em, ' ', a_em) AS Nombre_Completo_Empleado"))
+            ->select('id_em', DB::raw("CONCAT(n_em, ' ', a_em) AS Nombre"))
             ->where('estado', '=', 0)
             ->get();
             if ($resultado) {

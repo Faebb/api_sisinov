@@ -19,7 +19,7 @@ class novedadReadEvidenciaController extends Controller
                 return [
                     'status' => 'success',
                     'message' => 'Evidencias encontradas correctamente',
-                    'data' => $resultado,
+                    'data' => [$resultado],
                 ];
             } else {
                 return [

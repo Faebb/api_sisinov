@@ -25,7 +25,7 @@ class novedadCreateController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 400);
+            return response()->json(['error' => true, 'errors' => $validator->errors()], 400);
         }
 
         DB::beginTransaction();
