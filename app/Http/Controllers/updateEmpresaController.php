@@ -27,7 +27,7 @@ class updateEmpresaController extends Controller
             'ID_Doc' => 'integer|digits:1',
             'CC_Rl' => 'string|max:11',
             'telefonoGeneral' => 'string|max:30',
-            'Val_E' => 'string|max:15',
+            'Val_E' => 'integer',
             'Est_E' => 'string|max:10',
             'Fh_Afi' => 'date',
             'fechaFinalizacion' => 'date',
