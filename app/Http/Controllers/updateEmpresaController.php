@@ -36,16 +36,16 @@ class updateEmpresaController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['error'=> true, 'error' => $validator->errors()], 400);
         }
 
         $update->fill($data);
         $update->save();
 
         if ($update->save()) {
-            return response()->json(['message' => 'Empresa actualizada con éxito'], 200);
+            return response()->json(['error'=> false, 'message' => 'Empresa actualizada con éxito'], 200);
         } else {
-            return response()->json(['error' => 'Error al actualizar la Empresa'], 500);
+            return response()->json(['error'=> true, 'message' => 'Error al actualizar la Empresa'], 500);
         }
 
     }

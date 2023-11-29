@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 class updateEstadoSedeController extends Controller
 {
-    public function updateEstSede(Request $request, $id)
+    public function  updateEstSede(Request $request, $id)
     {
 
         $update = Sede::find($id);

@@ -21,7 +21,6 @@ class createEncargadoController extends Controller
             'tel1' => 'required|string|size:10',
             'tel2' => 'string|nullable|size:10',
             'tel3' => 'string|nullable|size:10',
-            'Est_en' => 'required|max:2',
         ]);
 
         if ($validator->fails()){
@@ -41,7 +40,7 @@ class createEncargadoController extends Controller
             $encargadoEstado = new EncargadoEstado([
                 'ID_En' => $idEncargado,
                 'ID_S' => $data['ID_S'],
-                'Est_en' => $data['Est_en'],
+                'Est_en' => '0',
             ]);
             $encargadoEstado->save();
             DB::commit();

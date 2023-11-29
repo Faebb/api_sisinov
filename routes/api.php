@@ -52,7 +52,7 @@ Route::group([], function(){
     Route::get('/novedadempleados', [novedadReadEmpleadoController::class, 'index']);
     //metodos put
     Route::put('/novedad/{id}', [novedadUpdateTpNovedadController::class, 'update']);
-})->name('Evidencia'); 
+})->name('Novedad'); 
 
 Route::group([], function () {
     //metodos post
@@ -84,7 +84,7 @@ Route::group([], function(){
     Route::post('/empleado', [empleadoCreateController::class, 'create']);
     Route::post('/verifpass', [loginController::class, 'verifpass']);
     Route::post('/changepass' , [loginController::class, 'changepass']);
-})->name('Login'); 
+})->name('Empleado'); 
 
 //Reportes
 Route::group([], function () {
