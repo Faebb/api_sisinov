@@ -34,7 +34,7 @@ class readEmpresaController extends Controller
             ];
         }
     }
-    public function show(Empresa $id)
+    public function show( $id)
     {
         try {
             $resultado = Empresa::find($id);
