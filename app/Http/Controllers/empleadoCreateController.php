@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\ContactoEmergencium;
 use App\Models\Empleado;
+use App\Models\Login;
+use App\Models\UserRol;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class empleadoCreateController extends Controller
@@ -84,29 +87,28 @@ class empleadoCreateController extends Controller
 
             //insertar tabla login
 
-            $encargadoModel = new Encargado([
-                'N_En' => $data['N_En'],
-                'tel1' => $data['tel1'],
+            $login = new Login([
+                'passw' => $data['passw'],
+                'id_em' => $idEmpleado,
             ]);
 
-            $encargadoModel->save();
-            $idEncargado = $encargadoModel->ID_En;
+            $login->save();
+            $idLogin = $login->ID_log;
 
             //Insertar Encargado_Estado
-            $encargadoEstado = new EncargadoEstado([
-                'ID_En' => $idEncargado,
-                'ID_S' => $idSede,
-                'Est_en' => '0',
+            $userRol = new UserRol([
+                'id_rol' => $data['id_rol'],
+                'id_log' => $idLogin,
             ]);
-            $encargadoEstado->save();
+            $userRol->save();
 
 
 
             DB::commit();
-            return response()->json(['error' => false, 'message' => 'Empresa creada con éxito'], 201); // 201 Created
+            return response()->json(['error' => false, 'message' => 'Empleado creada con éxito'], 201); // 201 Created
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => true, 'message' => 'Error al crear la empresa'], 500); // 500 Internal Server Error
+            return response()->json(['error' => true, 'message' => 'Error al crear el Empleado'], 500); // 500 Internal Server Error
         }
     }
 }
