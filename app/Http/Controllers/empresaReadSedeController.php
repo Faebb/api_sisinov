@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Sede;
 use Illuminate\Support\Facades\DB;
 
-class readSedeController extends Controller
+class empresaReadSedeController extends Controller
 {
     public function index()
     {

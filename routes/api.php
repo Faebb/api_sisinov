@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\readEmpresaController;
-use App\Http\Controllers\createEmpresaController;
-use App\Http\Controllers\createEncargadoController;
-use App\Http\Controllers\createSedeController;
+//empresa
+use App\Http\Controllers\empresaCreateController;
+use App\Http\Controllers\empresaCreateEncargadoController;
+use App\Http\Controllers\empresaCreateSedeController;
+use App\Http\Controllers\empresaReadController;
+
 use App\Http\Controllers\empleadoCreateController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\updateEncargadoEstController;
@@ -27,6 +29,31 @@ use App\Http\Controllers\updateEmpresaController;
 use App\Http\Controllers\updateEncargadoController;
 use App\Http\Controllers\updateEstadoSedeController;
 use App\Http\Controllers\updateSedeController;
+
+
+Route::group([], function () {
+    //metodos post
+    Route::post('/fastempresa', [empresaCreateController::class, 'createFastEmpresa']);
+    Route::post('/empresa', [empresaCreateController::class, 'createEmpresa']);
+    Route::post('/sede', [empresaCreateSedeController::class, 'createSede']);
+    Route::post('/encargado', [empresaCreateEncargadoController::class, 'createEncargado']);
+    //metodos get
+    Route::get('/empresas', [empresaReadController::class, 'index']);
+    Route::get('/empresa/{id}', [empresaReadController::class, 'show']);
+    Route::get('/empresas/{nit}', [empresaReadController::class, 'showForNit']);
+    Route::get('/sede', [empresaReadSedeController::class, 'index']);
+    Route::get('/sede/{id}', [empresaReadSedeController::class, 'show']);
+    Route::get('/tdoc', [readTipoDocController::class, 'index']);
+    Route::get('/tdoc/{id}', [readTipoDocController::class, 'show']);
+    Route::get('telsede', [readTelSedecontroller::class, 'index']);
+    Route::get('telsede/{id}', [readTelSedecontroller::class, 'show']);
+    //metodos put
+    Route::put('empresa/{id}', [updateEmpresaController::class, 'updateEmpresa']);
+    Route::put('sede/{id}', [updateSedeController::class, 'updateSede']);
+    Route::put('estadosede/{id}', [updateEstadoSedeController::class, 'updateEstSede']);
+    Route::put('encargado/{id}', [updateEncargadoController::class, 'updateEncargado']);
+    Route::put('encargadoestado/{id}', [updateEncargadoEstController::class, 'updateEncargadoEst']);
+})->name('Empresa');
 
 //logn
 Route::group([], function(){
@@ -54,29 +81,7 @@ Route::group([], function(){
     Route::put('/novedad/{id}', [novedadUpdateTpNovedadController::class, 'update']);
 })->name('Novedad'); 
 
-Route::group([], function () {
-    //metodos post
-    Route::post('/fastempresa', [createEmpresaController::class, 'createFastEmpresa']);
-    Route::post('/empresa', [createEmpresaController::class, 'createEmpresa']);
-    Route::post('/sede', [createSedeController::class, 'createSede']);
-    Route::post('/encargado', [createEncargadoController::class, 'createEncargado']);
-    //metodos get
-    Route::get('/empresas', [readEmpresaController::class, 'index']);
-    Route::get('/empresa/{id}', [readEmpresaController::class, 'show']);
-    Route::get('/empresas/{nit}', [readEmpresaController::class, 'showForNit']);
-    Route::get('/sede', [readSedeController::class, 'index']);
-    Route::get('/sede/{id}', [readSedeController::class, 'show']);
-    Route::get('/tdoc', [readTipoDocController::class, 'index']);
-    Route::get('/tdoc/{id}', [readTipoDocController::class, 'show']);
-    Route::get('telsede', [readTelSedecontroller::class, 'index']);
-    Route::get('telsede/{id}', [readTelSedecontroller::class, 'show']);
-    //metodos put
-    Route::put('empresa/{id}', [updateEmpresaController::class, 'updateEmpresa']);
-    Route::put('sede/{id}', [updateSedeController::class, 'updateSede']);
-    Route::put('estadosede/{id}', [updateEstadoSedeController::class, 'updateEstSede']);
-    Route::put('encargado/{id}', [updateEncargadoController::class, 'updateEncargado']);
-    Route::put('encargadoestado/{id}', [updateEncargadoEstController::class, 'updateEncargadoEst']);
-})->name('Empresa');
+
 
 //Empleado
 Route::group([], function(){

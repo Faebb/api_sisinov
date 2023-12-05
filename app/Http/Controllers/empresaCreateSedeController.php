@@ -7,7 +7,7 @@ use App\Models\Sede;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class createSedeController extends Controller
+class empresaCreateSedeController extends Controller
 {
     public function createSede(Request $request)
     {

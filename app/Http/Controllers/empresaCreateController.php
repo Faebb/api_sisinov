@@ -10,7 +10,7 @@ use App\Models\EncargadoEstado;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class createEmpresaController extends Controller
+class empresaCreateController extends Controller
 {
     public function createEmpresa(Request $request)
     {
