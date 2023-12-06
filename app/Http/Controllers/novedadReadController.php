@@ -52,6 +52,8 @@ class novedadReadController extends Controller
             $resultado = Novedad::select([
                 'novedad.ID_Nov',
                 'novedad.Fe_Nov',
+                'novedad.T_Nov',
+                'novedad.id_em',
                 'tp_novedad.Nombre_Tn',
                 'tp_novedad.descrip_Tn',
                 DB::raw('CASE WHEN novedad.ID_S IS NULL THEN novedad.Dic_Nov ELSE sede.Dic_S END as Direccion'),
