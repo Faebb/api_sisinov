@@ -13,6 +13,7 @@ class novedadReadController extends Controller
         try {
             $novedades = Novedad::select([
                 'novedad.ID_Nov',
+                'emp.id_e',
                 'novedad.Fe_Nov',
                 'tp_novedad.Nombre_Tn',
                 DB::raw('COALESCE(novedad.Dic_Nov, sede.Dic_S) as Direccion'),
@@ -21,6 +22,7 @@ class novedadReadController extends Controller
             ])
                 ->join('empleado as em', 'novedad.id_em', '=', 'em.id_em')
                 ->leftJoin('sede as sede', 'novedad.ID_S', '=', 'sede.ID_S')
+                ->join('empresa as emp', 'sede.id_e', '=', 'emp.id_e')
                 ->join('tp_novedad', 'novedad.T_Nov', '=', 'tp_novedad.T_Nov')
                 ->orderBy('novedad.Fe_Nov', 'desc')
                 ->get();    
@@ -52,6 +54,8 @@ class novedadReadController extends Controller
             $resultado = Novedad::select([
                 'novedad.ID_Nov',
                 'novedad.Fe_Nov',
+                'novedad.T_Nov',
+                'novedad.id_em',
                 'tp_novedad.Nombre_Tn',
                 'tp_novedad.descrip_Tn',
                 DB::raw('CASE WHEN novedad.ID_S IS NULL THEN novedad.Dic_Nov ELSE sede.Dic_S END as Direccion'),
