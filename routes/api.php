@@ -1,12 +1,16 @@
 <?php
 
 //empresa
+
+use App\Http\Controllers\empleadoController;
 use App\Http\Controllers\empresaCreateController;
 use App\Http\Controllers\empresaCreateEncargadoController;
 use App\Http\Controllers\empresaCreateSedeController;
 use App\Http\Controllers\empresaReadController;
 
 use App\Http\Controllers\empleadoCreateController;
+use App\Http\Controllers\empleadoReadController;
+use App\Http\Controllers\empleadoUptadeController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\updateEncargadoEstController;
 use Illuminate\Http\Request;
@@ -89,6 +93,18 @@ Route::group([], function(){
     Route::post('/empleado', [empleadoCreateController::class, 'create']);
     Route::post('/verifpass', [loginController::class, 'verifpass']);
     Route::post('/changepass' , [loginController::class, 'changepass']);
+    Route::post('/createcontemg', [empleadoCreateController::class, 'createcontemg']);
+    //metodos get
+    Route::get('/readveriemlempleado/{eml_em}', [empleadoReadController::class, 'readveriemlempleado']);
+    Route::get('/readverificarempleado/{id_doc}/{documento}', [empleadoReadController::class, 'readverificarempleado']);
+    Route::get('/readcontemg/{id}', [empleadoReadController::class, 'readcontemg']);
+    Route::get('/readminempleado', [empleadoReadController::class, 'readminempleado']);
+    Route::get('/readempleadoone/{id}', [empleadoReadController::class, 'readempleadoone']);
+    Route::get('readempleadoestado/{id}',[empresaReadController::class, 'readempleadoestado']);
+    //metodos put
+    Route::put('/updatecontemg', [empleadoUptadeController::class, 'updatecontemg']);
+    Route::put('updateempleadoinfoone',[empleadoUptadeController::class, 'updateempleadoinfoone']);
+    Route::put('/updateestadoempleado', [empleadoUptadeController::class, 'updateestadoempleado']);
 })->name('Empleado'); 
 
 //Reportes

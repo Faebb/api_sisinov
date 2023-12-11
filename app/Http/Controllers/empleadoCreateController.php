@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class empleadoCreateController extends Controller
 {
-    public function createFastEmpresa(Request $request)
+    public function create(Request $request)
     {
         $data = $request->all();
 
@@ -22,10 +22,10 @@ class empleadoCreateController extends Controller
             'n_em' => 'required|string|max:35',
             'a_em' => 'required|string|max:35',
             'eml_em' => 'required|email|max:60',
-            'f_em' => 'required|date',
+            'f_em' => 'required|string',
             'dir_em' => 'required|string|max:255',
-            'lic_emp' => 'required|string|max:2',
-            'lib_em' => 'required|string|max:1',
+            'lic_emp' => 'required|string',
+            'lib_em' => 'required|string',
             'tel_em' => 'required|string|max:10',
             'contrato' => 'required|string|max:255',
             'barloc_em' => 'required|string|max:255',
@@ -77,10 +77,10 @@ class empleadoCreateController extends Controller
             // Insertar contacto de emergencia
 
             $contactoEmergencia = new ContactoEmergencium([
-                'n_coe' => $data['n_coe'],
-                'csag' => $data['csag'],
+                'N_CoE' => $data['n_coe'],
+                'Csag' => $data['csag'],
                 'id_em' => $idEmpleado,
-                't_cem' => $data['t_cem'],
+                'T_CEm' => $data['t_cem'],
             ]);
 
             $contactoEmergencia->save();
@@ -97,8 +97,8 @@ class empleadoCreateController extends Controller
 
             //Insertar Encargado_Estado
             $userRol = new UserRol([
-                'id_rol' => $data['id_rol'],
-                'id_log' => $idLogin,
+                'ID_rol' => $data['id_rol'],
+                'ID_log' => $idLogin,
             ]);
             $userRol->save();
 
@@ -109,6 +109,53 @@ class empleadoCreateController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => true, 'message' => 'Error al crear el Empleado'], 500); // 500 Internal Server Error
+        }
+    }
+    public function createcontemg(Request $request){
+        $validator = Validator::make($request->all(), [
+            'N_CoE' => 'required|string',
+            'Csag' => 'required|string',
+            'id_em' => 'required|integer',
+            'T_CEm' => 'required|string',
+        ]);
+    
+        if ($validator->fails()) {
+            $response = array(
+                'error' => true,
+                'message' => 'Error en el contenido JSON',
+            );
+            return response()->json($response, 422);
+        }
+    
+        $datosModel = $request->all();
+    
+        try {
+            $id = DB::table('contacto_emergencia')->insertGetId([
+                'N_CoE' => $datosModel['N_CoE'],
+                'Csag' => $datosModel['Csag'],
+                'id_em' => $datosModel['id_em'],
+                'T_CEm' => $datosModel['T_CEm'],
+            ]);
+    
+            if ($id > 0) {
+                $response = array(
+                    'error' => false,
+                    'message' => 'Contacto de emergencia creado con éxito',
+                );
+                return response()->json($response, 201);
+            } else {
+                $response = array(
+                    'error' => true,
+                    'message' => 'Ocurrió un error al crear el contacto de emergencia',
+                );
+                return response()->json($response, 200);
+            }
+        } catch (\Exception $e) {
+            $response = array(
+                'error' => true,
+                'message' => 'Método de solicitud no válido',
+            );
+            return response()->json($response, 500);
         }
     }
 }
