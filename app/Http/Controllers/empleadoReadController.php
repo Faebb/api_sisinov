@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class empleadoReadController extends Controller
 {
@@ -39,28 +40,28 @@ class empleadoReadController extends Controller
     public function readverificarempleado($id_doc, $documento)
     {
 
-        
-            try {
-                $result = DB::table('empleado')
-                    ->where('id_doc', $id_doc)
-                    ->where('documento', $documento)
-                    ->get();
 
-                if ($result->isEmpty()) {
-                    error_log('Empleado NO encontrado en la base de datos');
-                    $response['error'] = false;
-                    $response['message'] = 'Solicitud completada correctamente';
-                    $response['encontrado'] = false;
-                } else {
-                    error_log('Empleado encontrado en la base de datos');
-                    $response['error'] = false;
-                    $response['message'] = 'Solicitud completada correctamente';
-                    $response['encontrado'] = true;
-                }
-            } catch (\Exception $e) {
-                $response['error'] = true;
-                $response['message'] = 'Error occurred';
+        try {
+            $result = DB::table('empleado')
+                ->where('id_doc', $id_doc)
+                ->where('documento', $documento)
+                ->get();
+
+            if ($result->isEmpty()) {
+                error_log('Empleado NO encontrado en la base de datos');
+                $response['error'] = false;
+                $response['message'] = 'Solicitud completada correctamente';
+                $response['encontrado'] = false;
+            } else {
+                error_log('Empleado encontrado en la base de datos');
+                $response['error'] = false;
+                $response['message'] = 'Solicitud completada correctamente';
+                $response['encontrado'] = true;
             }
+        } catch (\Exception $e) {
+            $response['error'] = true;
+            $response['message'] = 'Error occurred';
+        }
 
         return response()->json($response);
     }
@@ -189,4 +190,41 @@ class empleadoReadController extends Controller
             ], 500);
         }
     }
+
+    public function readperfil(Request $request)
+    {
+        $data = $request->all();
+        $id = $data['id'];
+        try {
+            $result = DB::table('empleado')
+                ->select('id_em', 'n_em', 'a_em', 'eml_em', 'dir_em', 'lic_emp', 'tel_em', 'barloc_em')
+                ->where('id_em', $id)
+                ->get();
+
+            if ($result->isEmpty()) {
+                return response()->json([
+                    'error' => true,
+                    'status' => 'error',
+                    'message' => 'No results found',
+                    'data' => [],
+                ], 404);
+            } else {
+                return response()->json([
+                    'error' => false,
+                    'status' => 'success',
+                    'data' => $result,
+                ], 200);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'metodo no valido' . $e->getMessage(),
+                'data' => [],
+            ], 500);
+        }
+    }
+
+   
+    
 }

@@ -265,5 +265,63 @@ class empleadoUptadeController extends Controller
         ], 500);
     }
 }
+public function updateperfil(Request $request){
+    $data = $request->all();
+
+    $validator = Validator::make($data, [
+        'id_em' => 'required|integer',
+        'n_em' => 'string',
+        'a_em' => 'string',
+        'eml_em' => 'email',
+        'dir_em' => 'string',
+        'lic_emp' => 'string',
+        'tel_em' => 'string',
+        'barloc_em' => 'string',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'error' => true,
+            'message' => $validator->errors(),
+        ], 400);
+    }
+
+    try {
+        $result = DB::table('empleado')
+            ->where('id_em', $data["id_em"])
+            ->update([
+                'n_em' => $data["n_em"],
+                'a_em' => $data["a_em"],
+                'eml_em' => $data["eml_em"],
+                'dir_em' => $data["dir_em"],
+                'lic_emp' => $data["lic_emp"],
+                'tel_em' => $data["tel_em"],
+                'barloc_em' => $data["barloc_em"]
+            ]);
+
+            if ($result) {
+                return response()->json([
+                    'error' => false,
+                    'status' => 'success',
+                    'message' => 'Update successful',
+                    'data' => [],
+                ], 200);
+            } else {
+                return response()->json([
+                    'error' => true,
+                    'status' => 'error',
+                    'message' => 'No update was made',
+                    'data' => [],
+                ], 200);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'metodo no valido' . $e->getMessage(),
+                'data' => [],
+            ], 500);
+        }
+}
 
 }

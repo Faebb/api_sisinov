@@ -100,11 +100,13 @@ Route::group([], function(){
     Route::get('/readcontemg/{id}', [empleadoReadController::class, 'readcontemg']);
     Route::get('/readminempleado', [empleadoReadController::class, 'readminempleado']);
     Route::get('/readempleadoone/{id}', [empleadoReadController::class, 'readempleadoone']);
-    Route::get('readempleadoestado/{id}',[empresaReadController::class, 'readempleadoestado']);
+    Route::get('/readempleadoestado/{id}',[empresaReadController::class, 'readempleadoestado']);
+    Route::post('/readperfil', [empleadoReadController::class, 'readperfil']);
     //metodos put
     Route::put('/updatecontemg', [empleadoUptadeController::class, 'updatecontemg']);
     Route::put('updateempleadoinfoone',[empleadoUptadeController::class, 'updateempleadoinfoone']);
     Route::put('/updateestadoempleado', [empleadoUptadeController::class, 'updateestadoempleado']);
+    Route::put('/updateperfil', [empleadoUptadeController::class, 'updateperfil']);
 })->name('Empleado'); 
 
 //Reportes
@@ -118,4 +120,5 @@ Route::group([], function () {
     Route::post('/rephistnov', [reporteController::class, 'rephistnov']);
     Route::post('/repsedetpnov', [reporteController::class, 'repsedetpnov']);
     Route::get('/readtrazabilidad', [reporteController::class, 'readtrazabilidad']);
+
 })->name('Reporte');
