@@ -100,7 +100,7 @@ Route::group([], function(){
     Route::get('/readcontemg/{id}', [empleadoReadController::class, 'readcontemg']);
     Route::get('/readminempleado', [empleadoReadController::class, 'readminempleado']);
     Route::get('/readempleadoone/{id}', [empleadoReadController::class, 'readempleadoone']);
-    Route::get('/readempleadoestado/{id}',[empresaReadController::class, 'readempleadoestado']);
+    Route::get('/readempleadoestado/{id}',[empleadoReadController::class, 'readempleadoestado']);
     Route::post('/readperfil', [empleadoReadController::class, 'readperfil']);
     //metodos put
     Route::put('/updatecontemg', [empleadoUptadeController::class, 'updatecontemg']);

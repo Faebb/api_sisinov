@@ -216,7 +216,7 @@ class empleadoUptadeController extends Controller
             ], 500);
         }
     }
-    public function updateEstadoEmpModel(Request $request)
+    public function updateestadoempleado(Request $request)
 {
     $data = $request->all();
 
