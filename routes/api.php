@@ -11,6 +11,7 @@ use App\Http\Controllers\empresaReadController;
 use App\Http\Controllers\empleadoCreateController;
 use App\Http\Controllers\empleadoReadController;
 use App\Http\Controllers\empleadoUptadeController;
+use App\Http\Controllers\empresaReadSedeController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\updateEncargadoEstController;
 use Illuminate\Http\Request;
@@ -82,7 +83,7 @@ Route::group([], function(){
     Route::get('/novedadsede/{id}', [novedadReadNovedadSedeaController::class, 'show']);
     Route::get('/novedadempleados', [novedadReadEmpleadoController::class, 'index']);
     //metodos put
-    Route::put('/novedad/{id}', [novedadUpdateTpNovedadController::class, 'update']);
+    Route::put('/novedad', [novedadUpdateTpNovedadController::class, 'update']);
 })->name('Novedad'); 
 
 
@@ -109,5 +110,13 @@ Route::group([], function(){
 
 //Reportes
 Route::group([], function () {
-    Route::get('/reporte-novedad', [reporteController::class, 'repnov']);
+    Route::post('/repnov', [reporteController::class, 'repnov']);
+    Route::post('repnovsector', [reporteController::class, 'repnovsector']);
+    Route::post('repnovdia', [reporteController::class, 'repnovdia']);
+    Route::post('/repnovhora', [reporteController::class, 'repnovhora']);
+    Route::post('/repempresanov', [reporteController::class, 'repempresanov']);
+    Route::post('/repsedenov', [reporteController::class, 'repsedenov']);
+    Route::post('/rephistnov', [reporteController::class, 'rephistnov']);
+    Route::post('/repsedetpnov', [reporteController::class, 'repsedetpnov']);
+    Route::get('/readtrazabilidad', [reporteController::class, 'readtrazabilidad']);
 })->name('Reporte');

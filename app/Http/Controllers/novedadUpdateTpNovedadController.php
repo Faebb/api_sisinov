@@ -4,39 +4,39 @@ namespace App\Http\Controllers;
 
 use App\Models\Novedad;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class novedadUpdateTpNovedadController extends Controller
-{
-    public function update(Request $request, $id)
-    {
-
-        $update = Novedad::find($id);
-
-        if (!$update) {
-            return response()->json(['error' => 'Novedad no encontrada'], 404);
+{    
+    public function update(Request $request){
+        $datosModel = $request->all();
+    
+        
+    
+        
+    
+        try {
+            DB::table('novedad')
+                ->where('ID_Nov', $datosModel["ID_Nov"])
+                ->update([
+                    'T_Nov' => $datosModel["T_Nov"],
+                    'Des_Nov' => $datosModel["Des_Nov"],
+                    'id_em' => $datosModel["id_em"]
+                ]);
+    
+            return response()->json([
+                'error' => false,
+                'status' => 'success',
+                'message' => 'Update successful',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'Update failed: ' . $e->getMessage()
+            ], 500);
         }
-
-        $data = $request->all();
-
-        $validator = Validator::make($data, [
-            'T_Nov' => 'integer',
-            'Des_Nov' => 'string|max:255',
-            'id_em' => 'integer',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-
-        $update->fill($data);
-        $update->save();
-
-        if ($update->save()) {
-            return response()->json(['message' => 'Novedad actualizada con éxito'], 200);
-        } else {
-            return response()->json(['error' => 'Error al actualizar la Novedad'], 500);
-        }
-
     }
+    
 }
