@@ -7,6 +7,7 @@ use App\Http\Controllers\empresaCreateController;
 use App\Http\Controllers\empresaCreateEncargadoController;
 use App\Http\Controllers\empresaCreateSedeController;
 use App\Http\Controllers\empresaReadController;
+use App\Http\Controllers\empresaReadSedeController;
 
 use App\Http\Controllers\empleadoCreateController;
 use App\Http\Controllers\empleadoReadController;
