@@ -8,31 +8,44 @@ use Illuminate\Support\Facades\DB;
 
 class empresaReadController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $empresas = Empresa::all();
+        $data = $request->all();
 
-            if ($empresas->isEmpty()) {
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $empresas = Empresa::all();
+    
+                if ($empresas->isEmpty()) {
+                    return [
+                        'status' => 'error',
+                        'message' => 'No se encontraron Empresas',
+                        'data' => [],
+                    ];
+                } else {
+                    return [
+                        'status' => 'success',
+                        'message' => 'Empresas encontradas correctamente',
+                        'data' => $empresas,
+                    ];
+                }
+            } catch (\Exception $e) {
                 return [
                     'status' => 'error',
-                    'message' => 'No se encontraron Empresas',
-                    'data' => [],
-                ];
-            } else {
-                return [
-                    'status' => 'success',
-                    'message' => 'Empresas encontradas correctamente',
-                    'data' => $empresas,
+                    'message' => 'Error al buscar las Empresas: ' . $e->getMessage(),
+                    'data' => null,
                 ];
             }
-        } catch (\Exception $e) {
+        } else {
             return [
                 'status' => 'error',
-                'message' => 'Error al buscar las Empresas: ' . $e->getMessage(),
+                'message' => 'No autorizado',
                 'data' => null,
             ];
         }
+        
     }
     public function show( $id)
     {

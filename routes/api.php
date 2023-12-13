@@ -42,7 +42,7 @@ Route::group([], function () {
     Route::post('/sede', [empresaCreateSedeController::class, 'createSede']);
     Route::post('/encargado', [empresaCreateEncargadoController::class, 'createEncargado']);
     //metodos get
-    Route::get('/empresas', [empresaReadController::class, 'index']);
+    Route::post('/empresas', [empresaReadController::class, 'index']);
     Route::get('/empresa/{id}', [empresaReadController::class, 'show']);
     Route::get('/empresas/{nit}', [empresaReadController::class, 'showForNit']);
     Route::get('/sede', [empresaReadSedeController::class, 'index']);
@@ -59,7 +59,7 @@ Route::group([], function () {
     Route::put('encargadoestado/{id}', [updateEncargadoEstController::class, 'updateEncargadoEst']);
 })->name('Empresa');
 
-//logn
+//login
 Route::group([], function(){
     //metodos post
     Route::post('/login', [loginController::class, 'login']);
