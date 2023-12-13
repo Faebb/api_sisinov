@@ -37,7 +37,7 @@ class loginController extends Controller
 
                 $token = new Token([
                     'id_em' => $idEmpleado,
-                    'nToken' => $ntoken,
+                    'nToken' => env('JWT_SECRET').$ntoken,
                     'fechaVencimiento' => $fechaMasUnDia,
                 ]);
                 $token->save();
