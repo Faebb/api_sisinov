@@ -7,37 +7,52 @@ use Illuminate\Support\Facades\DB;
 
 class novedadReadNovedadSedeaController extends Controller
 {
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        try {
-            $resultado = DB::table('sede')
-            ->join('empresa', 'sede.id_e', '=', 'empresa.id_e')
-            ->select('sede.ID_S', 'sede.Dic_S')
-            ->where([
-                ['empresa.id_e', '=', $id],
-                ['sede.est_sed', '=', 0]
-            ])
-            ->get();
+        $data = $request->all();
+        $token = $data['nToken'];
 
-            if ($resultado) {
-                return [
-                    'status' => 'success',
-                    'message' => 'Sedes encontradas correctamente',
-                    'data' => $resultado,
-                ];
-            } else {
-                return [
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $resultado = DB::table('sede')
+                    ->join('empresa', 'sede.id_e', '=', 'empresa.id_e')
+                    ->select('sede.ID_S', 'sede.Dic_S')
+                    ->where([
+                        ['empresa.id_e', '=', $id],
+                        ['sede.est_sed', '=', 0]
+                    ])
+                    ->get();
+
+                if ($resultado) {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Sedes encontradas correctamente',
+                        'data' => $resultado,
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'Sedes no encontrada',
+                        'data' => [],
+                    ], 404);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
                     'status' => 'error',
-                    'message' => 'Sedes no encontrada',
-                    'data' => null,
-                ];
+                    'message' => 'Error al buscar las Sedes de la novedad: ' . $e->getMessage(),
+                    'data' => [],
+                ], 500);
             }
-        } catch (\Exception $e) {
-            return [
+        } else {
+            return response()->json([
+                'error' => true,
                 'status' => 'error',
-                'message' => 'Error al buscar las Sedes de la novedad: ' . $e->getMessage(),
-                'data' => null,
-            ];
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 }

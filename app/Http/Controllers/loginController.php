@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Token;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\tokenController;
 
 class loginController extends Controller
 {
@@ -13,7 +14,7 @@ class loginController extends Controller
         $data = $request->all();
         $documento = $data['documento'];
         $passw = $data['passw'];
-        
+
         try {
             $user = DB::table('empleado')
                 ->join('login', 'empleado.id_em', '=', 'login.id_em')
@@ -24,8 +25,8 @@ class loginController extends Controller
                 ->where('empleado.estado', 0)
                 ->select('empleado.id_em', 'empleado.n_em', 'rol.ID_rol', 'rol.N_rol')
                 ->first();
-                //guardo id de el empleado
-                $idEmpleado = $user->id_em;
+            //guardo id de el empleado
+            $idEmpleado = $user->id_em;
 
             if ($user) {
                 //guardo la fecha actual mas un día
@@ -37,7 +38,7 @@ class loginController extends Controller
 
                 $token = new Token([
                     'id_em' => $idEmpleado,
-                    'nToken' => env('JWT_SECRET').$ntoken,
+                    'nToken' => env('JWT_SECRET') . $ntoken,
                     'fechaVencimiento' => $fechaMasUnDia,
                 ]);
                 $token->save();
@@ -90,68 +91,92 @@ class loginController extends Controller
         return $result;
     }
 
-    public function verifpass()
+    public function verifpass(Request $request)
     {
-        try {
-            $datosModel = request()->all();
-            $id_em = $datosModel['id_em'];
-            $passw = $datosModel['passw'];
+        $data = $request->all();
+        $token = $data['nToken'];
 
-            $user = DB::table('login')
-                ->where('id_em', $id_em)
-                ->where('passw', $passw)
-                ->select('id_em')
-                ->first();
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $datosModel = request()->all();
+                $id_em = $datosModel['id_em'];
+                $passw = $datosModel['passw'];
 
-            if ($user) {
-                return response()->json([
-                    'error' => false,
-                    'message' => 'contraseña valida',
-                    'user' => $user,
-                ]);
-            } else {
+                $user = DB::table('login')
+                    ->where('id_em', $id_em)
+                    ->where('passw', $passw)
+                    ->select('id_em')
+                    ->first();
+
+                if ($user) {
+                    return response()->json([
+                        'error' => false,
+                        'message' => 'contraseña valida',
+                        'user' => $user,
+                    ]);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'Error: Credenciales incorrectas.',
+                    ]);
+                }
+            } catch (\Exception $e) {
                 return response()->json([
                     'error' => true,
-                    'message' => 'Error: Credenciales incorrectas.',
+                    'message' => 'Método de solicitud no válido',
                 ]);
             }
-        } catch (\Exception $e) {
+        } else {
             return response()->json([
                 'error' => true,
-                'message' => 'Método de solicitud no válido',
-            ]);
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 
-    public function changepass()
+    public function changepass(Request $request)
     {
-        try {
-            $datosModel = request()->all();
-            $id_em = $datosModel['id_em'];
-            $passw = $datosModel['passw'];
+        $data = $request->all();
+        $token = $data['nToken'];
 
-            $affected = DB::table('login')
-                ->where('id_em', $id_em)
-                ->update(['passw' => $passw]);
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $datosModel = request()->all();
+                $id_em = $datosModel['id_em'];
+                $passw = $datosModel['passw'];
 
-            if ($affected) {
-                return response()->json([
-                    'error' => false,
-                    'message' => 'Cambio exitoso de contraseña',
-                    'respond' => $affected,
-                ]);
-            } else {
+                $affected = DB::table('login')
+                    ->where('id_em', $id_em)
+                    ->update(['passw' => $passw]);
+
+                if ($affected) {
+                    return response()->json([
+                        'error' => false,
+                        'message' => 'Cambio exitoso de contraseña',
+                        'respond' => $affected,
+                    ]);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'Error: No se logro cambiar la contraseña.',
+                        'respond' => $affected,
+                    ]);
+                }
+            } catch (\Exception $e) {
                 return response()->json([
                     'error' => true,
-                    'message' => 'Error: No se logro cambiar la contraseña.',
-                    'respond' => $affected,
+                    'message' => 'Método de solicitud no válido',
                 ]);
             }
-        } catch (\Exception $e) {
+        } else {
             return response()->json([
                 'error' => true,
-                'message' => 'Método de solicitud no válido',
-            ]);
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 }

@@ -45,7 +45,7 @@ Route::group([], function () {
     Route::post('/empresas', [empresaReadController::class, 'index']);
     Route::post('/empresa/{id}', [empresaReadController::class, 'show']);
     Route::post('/empresas/{nit}', [empresaReadController::class, 'showForNit']);
-    Route::post('/sede', [empresaReadSedeController::class, 'index']);
+    Route::post('/sedes', [empresaReadSedeController::class, 'index']);
     Route::post('/sede/{id}', [empresaReadSedeController::class, 'show']);
     Route::post('/tdoc', [readTipoDocController::class, 'index']);
     Route::post('/tdoc/{id}', [readTipoDocController::class, 'show']);
@@ -74,13 +74,13 @@ Route::group([], function(){
     Route::post('/novedadevidencia', [novedadCreateEvidenciaController::class, 'create']);
     Route::post('/tpnov', [novedadCreateTpNovedadController::class, 'create']);
     //metods get
-    Route::get('/novedad', [novedadReadController::class, 'index']);
-    Route::get('/novedad/{id}', [novedadReadController::class, 'show']);
-    Route::get('/tpnov', [novedadReadTpNovedadController::class, 'index']);
-    Route::get('/evidencia/{id}', [novedadReadEvidenciaController::class, 'show']);
-    Route::get('/novedadempresa', [novedadReadNovedadEmpresaController::class, 'index']);
-    Route::get('/novedadsede/{id}', [novedadReadNovedadSedeaController::class, 'show']);
-    Route::get('/novedadempleados', [novedadReadEmpleadoController::class, 'index']);
+    Route::post('/novedades', [novedadReadController::class, 'index']);
+    Route::post('/novedad/{id}', [novedadReadController::class, 'show']);
+    Route::post('/tpnovs', [novedadReadTpNovedadController::class, 'index']);
+    Route::post('/evidencia/{id}', [novedadReadEvidenciaController::class, 'show']);
+    Route::post('/novedadempresa', [novedadReadNovedadEmpresaController::class, 'index']);
+    Route::post('/novedadsede/{id}', [novedadReadNovedadSedeaController::class, 'show']);
+    Route::post('/novedadempleados', [novedadReadEmpleadoController::class, 'index']);
     //metodos put
     Route::put('/novedad', [novedadUpdateTpNovedadController::class, 'update']);
 })->name('Novedad'); 

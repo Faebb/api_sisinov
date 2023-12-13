@@ -6,10 +6,12 @@ use App\Models\TpNovedad;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\tokenController;
 
 class novedadCreateTpNovedadController extends Controller
 {
-    public function create (Request $request){
+    public function create(Request $request)
+    {
         $data = $request->all();
 
         $validator = Validator::make($data, [
@@ -20,8 +22,10 @@ class novedadCreateTpNovedadController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
+        $token = $data['nToken'];
 
-        DB::beginTransaction();
+        if (app(tokenController::class)->token($token)) {
+            DB::beginTransaction();
 
         try {
             $tpnovedad = new TpNovedad([
@@ -32,9 +36,17 @@ class novedadCreateTpNovedadController extends Controller
             $tpnovedad->save();
 
             DB::commit();
-            return response()->json(['message' => 'Tipo de novedad creada con exito'], 201);
+            return response()->json(['error' => false,'message' => 'Tipo de novedad creada con exito'], 201);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al crear el tipo de novedad'], 500);
+            return response()->json(['error' => true,'message' => 'Error al crear el tipo de novedad'], 500);
+        }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 }
