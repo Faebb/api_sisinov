@@ -13,95 +13,125 @@ class empresaReadController extends Controller
     {
         $data = $request->all();
         $token = $data['nToken'];
-        
 
         if (app(tokenController::class)->token($token)) {
             try {
                 $empresas = Empresa::all();
 
-            if ($empresas->isEmpty()) {
+                if ($empresas->isEmpty()) {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'error',
+                        'message' => 'No se encontraron Empresas',
+                        'data' => [],
+                    ], 404);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'success',
+                        'message' => 'Empresas encontradas correctamente',
+                        'data' => $empresas,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
                 return response()->json([
+                    'error' => true,
                     'status' => 'error',
-                    'message' => 'No se encontraron Empresas',
-                    
-                    'data' => [],
-                ], 404);
-            } else {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Empresas encontradas correctamente',
-                    'data' => $empresas,
-                ], 200);
-            }
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error al buscar las Empresas: ' . $e->getMessage(),
-                'data' => null,
-            ], 500);
-        }
-    } else {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'No autorizado',
-            'data' => null,
-        ], 401);
-    }
-}
-    public function show( $id)
-    {
-        try {
-            $resultado = Empresa::find($id);
-            if ($resultado) {
-                return [
-                    'status' => 'success',
-                    'message' => 'Empresa encontrada correctamente',
-                    'data' => $resultado,
-                ];
-            } else {
-                return [
-                    'status' => 'error',
-                    'message' => 'Empresa no encontrada',
+                    'message' => 'Error al buscar las Empresas: ' . $e->getMessage(),
                     'data' => null,
-                ];
+                ], 500);
             }
-        } catch (\Exception $e) {
-            return [
+        } else {
+            return response()->json([
+                'error' => true,
                 'status' => 'error',
-                'message' => 'Error al buscar la Empresa: ' . $e->getMessage(),
+                'message' => 'No autorizado',
                 'data' => null,
-            ];
+            ], 401);
+        }
+    }
+    public function show(Request $request, $id)
+    {
+        $data = $request->all();
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $resultado = Empresa::find($id);
+                if ($resultado) {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Empresa encontrada correctamente',
+                        'data' => $resultado,
+                    ],200);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'Empresa no encontrada',
+                        'data' => [],
+                    ],404);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'status' => 'error',
+                    'message' => 'Error al buscar la Empresa: ' . $e->getMessage(),
+                    'data' => [],
+                ],500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 
     public function showForNit(Request $request, $nit)
     {
-        try {
-            $valor = $request->input('valor');
-            $resultado = DB::table('empresa')
-                            ->select('id_e')
-                            ->where('Nit_E', $nit)
-                            ->get();
-            if ($resultado) {
+        $data = $request->all();
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $resultado = DB::table('empresa')
+                    ->select('id_e')
+                    ->where('Nit_E', $nit)
+                    ->get();
+                if ($resultado) {
+                    return [
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Empresa encontrada correctamente',
+                        'data' => $resultado,
+                    ];
+                } else {
+                    return [
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'Empresa no encontrada',
+                        'data' => null,
+                    ];
+                }
+            } catch (\Exception $e) {
                 return [
-                    'status' => 'success',
-                    'message' => 'Empresa encontrada correctamente',
-                    'data' => $resultado,
-                ];
-            } else {
-                return [
+                    'error' => true,
                     'status' => 'error',
-                    'message' => 'Empresa no encontrada',
+                    'message' => 'Error al buscar la Empresa: ' . $e->getMessage(),
                     'data' => null,
                 ];
             }
-        } catch (\Exception $e) {
-            return [
+        } else {
+            return response()->json([
+                'error' => true,
                 'status' => 'error',
-                'message' => 'Error al buscar la Empresa: ' . $e->getMessage(),
+                'message' => 'No autorizado',
                 'data' => null,
-            ];
+            ], 401);
         }
     }
-   
 }

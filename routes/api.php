@@ -41,16 +41,16 @@ Route::group([], function () {
     Route::post('/empresa', [empresaCreateController::class, 'createEmpresa']);
     Route::post('/sede', [empresaCreateSedeController::class, 'createSede']);
     Route::post('/encargado', [empresaCreateEncargadoController::class, 'createEncargado']);
-    Route::post('/empresas', [empresaReadController::class, 'index']);
     //metodos get
-    Route::get('/empresa/{id}', [empresaReadController::class, 'show']);
-    Route::get('/empresas/{nit}', [empresaReadController::class, 'showForNit']);
-    Route::get('/sede', [empresaReadSedeController::class, 'index']);
-    Route::get('/sede/{id}', [empresaReadSedeController::class, 'show']);
-    Route::get('/tdoc', [readTipoDocController::class, 'index']);
-    Route::get('/tdoc/{id}', [readTipoDocController::class, 'show']);
-    Route::get('telsede', [readTelSedecontroller::class, 'index']);
-    Route::get('telsede/{id}', [readTelSedecontroller::class, 'show']);
+    Route::post('/empresas', [empresaReadController::class, 'index']);
+    Route::post('/empresa/{id}', [empresaReadController::class, 'show']);
+    Route::post('/empresas/{nit}', [empresaReadController::class, 'showForNit']);
+    Route::post('/sede', [empresaReadSedeController::class, 'index']);
+    Route::post('/sede/{id}', [empresaReadSedeController::class, 'show']);
+    Route::post('/tdoc', [readTipoDocController::class, 'index']);
+    Route::post('/tdoc/{id}', [readTipoDocController::class, 'show']);
+    Route::post('telsede', [readTelSedecontroller::class, 'index']);
+    Route::post('telsede/{id}', [readTelSedecontroller::class, 'show']);
     //metodos put
     Route::put('empresa/{id}', [updateEmpresaController::class, 'updateEmpresa']);
     Route::put('sede/{id}', [updateSedeController::class, 'updateSede']);
