@@ -9,7 +9,8 @@ use App\Models\UserRol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Hashing\BcryptHasher;
 class empleadoCreateController extends Controller
 {
     public function create(Request $request)
@@ -45,80 +46,96 @@ class empleadoCreateController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
+        $data = $request->all();
+        $token = $data['nToken'];
 
-        DB::beginTransaction();
-
-        try {
-            // Insertar en la tabla "Empleado"
-            $empleado = new Empleado([
-                'id_doc' => $data['id_doc'],
-                'documento' => $data['documento'],
-                'n_em' => $data['n_em'],
-                'a_em' => $data['a_em'],
-                'eml_em' => $data['eml_em'],
-                'f_em' => $data['f_em'],
-                'dir_em' => $data['dir_em'],
-                'lic_emp' => $data['lic_emp'],
-                'lib_em' => $data['lib_em'],
-                'tel_em' => $data['tel_em'],
-                'contrato' => $data['contrato'],
-                'barloc_em' => $data['barloc_em'],
-                'id_pens' => $data['id_pens'],
-                'id_eps' => $data['id_eps'],
-                'id_arl' => $data['id_arl'],
-                'id_ces' => $data['id_ces'],
-                'id_rh' => $data['id_rh'],
-                'estado' => $data['estado'],
-            ]);
-
-            $empleado->save();
-            $idEmpleado = $empleado->id_em;
-
-            // Insertar contacto de emergencia
-
-            $contactoEmergencia = new ContactoEmergencium([
-                'N_CoE' => $data['n_coe'],
-                'Csag' => $data['csag'],
-                'id_em' => $idEmpleado,
-                'T_CEm' => $data['t_cem'],
-            ]);
-
-            $contactoEmergencia->save();
-
-            //insertar tabla login
-
-            $login = new Login([
-                'passw' => $data['passw'],
-                'id_em' => $idEmpleado,
-            ]);
-
-            $login->save();
-            $idLogin = $login->ID_log;
-
-            //Insertar Encargado_Estado
-            $userRol = new UserRol([
-                'ID_rol' => $data['id_rol'],
-                'ID_log' => $idLogin,
-            ]);
-            $userRol->save();
+        //encriptador
+        $passwEncriptada = bcrypt($data['passw']);
 
 
+        if (app(tokenController::class)->token($token)) {
+            DB::beginTransaction();
 
-            DB::commit();
-            return response()->json(['error' => false, 'message' => 'Empleado creada con éxito'], 201); // 201 Created
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => true, 'message' => 'Error al crear el Empleado'], 500); // 500 Internal Server Error
+            try {
+                // Insertar en la tabla "Empleado"
+                $empleado = new Empleado([
+                    'id_doc' => $data['id_doc'],
+                    'documento' => $data['documento'],
+                    'n_em' => $data['n_em'],
+                    'a_em' => $data['a_em'],
+                    'eml_em' => $data['eml_em'],
+                    'f_em' => $data['f_em'],
+                    'dir_em' => $data['dir_em'],
+                    'lic_emp' => $data['lic_emp'],
+                    'lib_em' => $data['lib_em'],
+                    'tel_em' => $data['tel_em'],
+                    'contrato' => $data['contrato'],
+                    'barloc_em' => $data['barloc_em'],
+                    'id_pens' => $data['id_pens'],
+                    'id_eps' => $data['id_eps'],
+                    'id_arl' => $data['id_arl'],
+                    'id_ces' => $data['id_ces'],
+                    'id_rh' => $data['id_rh'],
+                    'estado' => $data['estado'],
+                ]);
+
+                $empleado->save();
+                $idEmpleado = $empleado->id_em;
+
+                // Insertar contacto de emergencia
+
+                $contactoEmergencia = new ContactoEmergencium([
+                    'N_CoE' => $data['n_coe'],
+                    'Csag' => $data['csag'],
+                    'id_em' => $idEmpleado,
+                    'T_CEm' => $data['t_cem'],
+                ]);
+
+                $contactoEmergencia->save();
+
+                //insertar tabla login
+
+                $login = new Login([
+                    'passw' => $passwEncriptada,
+                    'id_em' => $idEmpleado,
+                ]);
+
+                $login->save();
+                $idLogin = $login->ID_log;
+
+                //Insertar Encargado_Estado
+                $userRol = new UserRol([
+                    'ID_rol' => $data['id_rol'],
+                    'ID_log' => $idLogin,
+                ]);
+                $userRol->save();
+
+
+
+                DB::commit();
+                return response()->json(['error' => false, 'message' => 'Empleado creada con éxito'], 201); // 201 Created
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json(['error' => true, 'message' => 'Error al crear el Empleado'], 500); // 500 Internal Server Error
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
-    public function createcontemg(Request $request){
+    public function createcontemg(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'N_CoE' => 'required|string',
             'Csag' => 'required|string',
             'id_em' => 'required|integer',
             'T_CEm' => 'required|string',
         ]);
-    
+
         if ($validator->fails()) {
             $response = array(
                 'error' => true,
@@ -126,9 +143,9 @@ class empleadoCreateController extends Controller
             );
             return response()->json($response, 422);
         }
-    
+
         $datosModel = $request->all();
-    
+
         try {
             $id = DB::table('contacto_emergencia')->insertGetId([
                 'N_CoE' => $datosModel['N_CoE'],
@@ -136,7 +153,7 @@ class empleadoCreateController extends Controller
                 'id_em' => $datosModel['id_em'],
                 'T_CEm' => $datosModel['T_CEm'],
             ]);
-    
+
             if ($id > 0) {
                 $response = array(
                     'error' => false,

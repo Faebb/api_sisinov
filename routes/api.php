@@ -91,8 +91,6 @@ Route::group([], function(){
 Route::group([], function(){
     //metodos post
     Route::post('/empleado', [empleadoCreateController::class, 'create']);
-    Route::post('/verifpass', [loginController::class, 'verifpass']);
-    Route::post('/changepass' , [loginController::class, 'changepass']);
     Route::post('/createcontemg', [empleadoCreateController::class, 'createcontemg']);
     //metodos get
     Route::get('/readveriemlempleado/{eml_em}', [empleadoReadController::class, 'readveriemlempleado']);

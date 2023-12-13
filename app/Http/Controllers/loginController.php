@@ -6,6 +6,7 @@ use App\Models\Token;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\tokenController;
+use Illuminate\Support\Facades\Hash;
 
 class loginController extends Controller
 {
@@ -15,25 +16,35 @@ class loginController extends Controller
         $documento = $data['documento'];
         $passw = $data['passw'];
 
+        $textoPlano = $passw;
+        $passwEncriptada = bcrypt($textoPlano);
+
         try {
+            // Consultar el usuario en la base de datos
             $user = DB::table('empleado')
                 ->join('login', 'empleado.id_em', '=', 'login.id_em')
                 ->join('user_rol', 'login.ID_Log', '=', 'user_rol.ID_Log')
                 ->join('rol', 'user_rol.ID_rol', '=', 'rol.ID_rol')
                 ->where('empleado.documento', $documento)
-                ->where('login.passw', $passw)
                 ->where('empleado.estado', 0)
-                ->select('empleado.id_em', 'empleado.n_em', 'rol.ID_rol', 'rol.N_rol')
+                ->select('login.ID_Log', 'empleado.id_em', 'empleado.n_em', 'rol.ID_rol', 'rol.N_rol', 'login.passw')
                 ->first();
-            //guardo id de el empleado
-            $idEmpleado = $user->id_em;
-
-            if ($user) {
-                //guardo la fecha actual mas un día
+            // Verificar la contraseña
+            if (Hash::check($passw, $user->passw)) {
+                $usuario = DB::table('empleado')
+                    ->join('login', 'empleado.id_em', '=', 'login.id_em')
+                    ->join('user_rol', 'login.ID_Log', '=', 'user_rol.ID_Log')
+                    ->join('rol', 'user_rol.ID_rol', '=', 'rol.ID_rol')
+                    ->where('empleado.documento', $documento)
+                    ->where('empleado.estado', 0)
+                    ->select('empleado.id_em', 'empleado.n_em', 'rol.ID_rol', 'rol.N_rol')
+                    ->first();
+                // La contraseña es correcta...
+                // Guardar la fecha actual más un día
                 $fechaActual = \Carbon\Carbon::now();
                 $fechaMasUnDia = $fechaActual->addDay();
-
-                //genero token
+                $idEmpleado = $user->id_em;
+                // Generar token
                 $ntoken = $this->generarTokenUnico();
 
                 $token = new Token([
@@ -48,11 +59,12 @@ class loginController extends Controller
                     return response()->json([
                         'error' => false,
                         'message' => 'Ingreso exitoso al sistema',
-                        'user' => $user,
+                        'user' => $usuario,
                         'token' => $Tokenf
                     ]);
                 }
             } else {
+                // La contraseña es incorrecta...
                 return response()->json([
                     'error' => true,
                     'message' => 'Error: Credenciales incorrectas.',
@@ -98,21 +110,26 @@ class loginController extends Controller
 
         if (app(tokenController::class)->token($token)) {
             try {
-                $datosModel = request()->all();
-                $id_em = $datosModel['id_em'];
-                $passw = $datosModel['passw'];
 
+                $id_em = $data['id_em'];
+                $passw = $data['passw'];
+
+                // Consultar el usuario en la base de datos
                 $user = DB::table('login')
                     ->where('id_em', $id_em)
-                    ->where('passw', $passw)
-                    ->select('id_em')
+                    ->select('id_em', 'passw')
                     ->first();
 
-                if ($user) {
+                // Verificar la contraseña
+                if (Hash::check($passw, $user->passw)) {
+                    $usuario = DB::table('login')
+                        ->where('id_em', $id_em)
+                        ->select('id_em')
+                        ->first();
                     return response()->json([
                         'error' => false,
                         'message' => 'contraseña valida',
-                        'user' => $user,
+                        'user' => $usuario,
                     ]);
                 } else {
                     return response()->json([
@@ -147,9 +164,11 @@ class loginController extends Controller
                 $id_em = $datosModel['id_em'];
                 $passw = $datosModel['passw'];
 
+                $passwEncriptada = bcrypt($passw);
+
                 $affected = DB::table('login')
                     ->where('id_em', $id_em)
-                    ->update(['passw' => $passw]);
+                    ->update(['passw' => $passwEncriptada]);
 
                 if ($affected) {
                     return response()->json([
