@@ -25,7 +25,7 @@ class novedadReadEvidenciaController extends Controller
                         'error' => false,
                         'status' => 'success',
                         'message' => 'Evidencias encontradas correctamente',
-                        'data' => [$resultado],
+                        'data' => $resultado,
                     ],200);
                 } else {
                     return response()->json([
