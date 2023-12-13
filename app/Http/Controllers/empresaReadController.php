@@ -5,48 +5,49 @@ namespace App\Http\Controllers;
 use App\Models\Empresa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\tokenController;
 
 class empresaReadController extends Controller
 {
     public function index(Request $request)
     {
         $data = $request->all();
-
         $token = $data['nToken'];
+        
 
         if (app(tokenController::class)->token($token)) {
             try {
                 $empresas = Empresa::all();
-    
-                if ($empresas->isEmpty()) {
-                    return [
-                        'status' => 'error',
-                        'message' => 'No se encontraron Empresas',
-                        'data' => [],
-                    ];
-                } else {
-                    return [
-                        'status' => 'success',
-                        'message' => 'Empresas encontradas correctamente',
-                        'data' => $empresas,
-                    ];
-                }
-            } catch (\Exception $e) {
-                return [
+
+            if ($empresas->isEmpty()) {
+                return response()->json([
                     'status' => 'error',
-                    'message' => 'Error al buscar las Empresas: ' . $e->getMessage(),
-                    'data' => null,
-                ];
+                    'message' => 'No se encontraron Empresas',
+                    
+                    'data' => [],
+                ], 404);
+            } else {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Empresas encontradas correctamente',
+                    'data' => $empresas,
+                ], 200);
             }
-        } else {
-            return [
+        } catch (\Exception $e) {
+            return response()->json([
                 'status' => 'error',
-                'message' => 'No autorizado',
+                'message' => 'Error al buscar las Empresas: ' . $e->getMessage(),
                 'data' => null,
-            ];
+            ], 500);
         }
-        
+    } else {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'No autorizado',
+            'data' => null,
+        ], 401);
     }
+}
     public function show( $id)
     {
         try {
@@ -100,6 +101,18 @@ class empresaReadController extends Controller
                 'message' => 'Error al buscar la Empresa: ' . $e->getMessage(),
                 'data' => null,
             ];
+        }
+    }
+    public function token($token)
+    {
+        $resuls = DB::table('token')
+            ->where('nToken', $token)
+            ->where('fechaVencimiento', '>', now())
+            ->count() > 0;
+        if ($resuls) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
