@@ -4,60 +4,91 @@ namespace App\Http\Controllers;
 
 use App\Models\TipoDoc;
 use Illuminate\Http\Request;
+use App\Http\Controllers\tokenController;
 
 class readTipoDocController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $tipodoc = TipoDoc::all();
+        $data = $request->all();
+        $token = $data['nToken'];
 
-            if ($tipodoc->isEmpty()) {
-                return [
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $tipodoc = TipoDoc::all();
+
+                if ($tipodoc->isEmpty()) {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No se encontraron tipo de documento',
+                        'data' => [],
+                    ], 404);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Tipos de documento encontrados correctamente',
+                        'data' => $tipodoc,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
                     'status' => 'error',
-                    'message' => 'No se encontraron tipo de documento',
+                    'message' => 'Error al buscar el tipo de documento: ' . $e->getMessage(),
                     'data' => [],
-                ];
-            } else {
-                return [
-                    'status' => 'success',
-                    'message' => 'Tipos de documento encontrados correctamente',
-                    'data' => $tipodoc,
-                ];
+                ], 500);
             }
-        } catch (\Exception $e) {
-            return [
+        } else {
+            return response()->json([
+                'error' => true,
                 'status' => 'error',
-                'message' => 'Error al buscar el tipo de documento: ' . $e->getMessage(),
-                'data' => null,
-            ];
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        try {
-            $resultado = TipoDoc::find($id);
+        $data = $request->all();
+        $token = $data['nToken'];
 
-            if ($resultado) {
-                return [
-                    'status' => 'success',
-                    'message' => 'Tipo de documento encontrada correctamente',
-                    'data' => $resultado,
-                ];
-            } else {
-                return [
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $resultado = TipoDoc::find($id);
+
+                if ($resultado) {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Tipo de documento encontrada correctamente',
+                        'data' => $resultado,
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'Tipo de documento no encontrada',
+                        'data' => [],
+                    ], 404);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
                     'status' => 'error',
-                    'message' => 'Tipo de documento no encontrada',
-                    'data' => null,
-                ];
+                    'message' => 'Error al buscar el tipo de Documento: ' . $e->getMessage(),
+                    'data' => [],
+                ], 500);
             }
-        } catch (\Exception $e) {
-            return [
+        } else {
+            return response()->json([
+                'error' => true,
                 'status' => 'error',
-                'message' => 'Error al buscar el tipo de Documento: ' . $e->getMessage(),
-                'data' => null,
-            ];
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 }

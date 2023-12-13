@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Encargado;
+use App\Http\Controllers\tokenController;
 
 class updateEncargadoController extends Controller
 {
@@ -26,16 +27,26 @@ class updateEncargadoController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 400);
         }
+        $token = $data['nToken'];
 
-        $update->fill($data);
-        $update->save();
+        if (app(tokenController::class)->token($token)) {
+            $update->fill($data);
+            $update->save();
 
-        if ($update->save()) {
-            return response()->json(['message' => 'Encargado actualizado con éxito'], 200);
+            if ($update->save()) {
+                return response()->json(['error' => false, 'message' => 'Encargado actualizado con éxito'], 200);
+            } else {
+                return response()->json(['error' => true, 'message' => 'Error al actualizar el Encargado'], 500);
+            }
         } else {
-            return response()->json(['error' => 'Error al actualizar el Encargado'], 500);
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 }

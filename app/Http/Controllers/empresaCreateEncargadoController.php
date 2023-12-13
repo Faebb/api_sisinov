@@ -7,6 +7,7 @@ use App\Models\EncargadoEstado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\tokenController;
 
 class empresaCreateEncargadoController extends Controller
 {
@@ -23,31 +24,42 @@ class empresaCreateEncargadoController extends Controller
             'tel3' => 'string|nullable|size:10',
         ]);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
-        DB::beginTransaction();
-        try {
-            $encargado = new Encargado([
-                'N_En' => $data['N_En'],
-                'tel1' => $data['tel1'],
-                'tel2' => $data['tel2'],
-                'tel3' => $data['tel3'],
-            ]);
-            $encargado->save();
-            $idEncargado = $encargado->ID_En;
+        $token = $data['nToken'];
 
-            $encargadoEstado = new EncargadoEstado([
-                'ID_En' => $idEncargado,
-                'ID_S' => $data['ID_S'],
-                'Est_en' => '0',
-            ]);
-            $encargadoEstado->save();
-            DB::commit();
-            return response()->json(['message' => 'sede creada correctamente'], 201);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json(['message' => 'error al crear el encargado'], 500);
+        if (app(tokenController::class)->token($token)) {
+            DB::beginTransaction();
+            try {
+                $encargado = new Encargado([
+                    'N_En' => $data['N_En'],
+                    'tel1' => $data['tel1'],
+                    'tel2' => $data['tel2'],
+                    'tel3' => $data['tel3'],
+                ]);
+                $encargado->save();
+                $idEncargado = $encargado->ID_En;
+
+                $encargadoEstado = new EncargadoEstado([
+                    'ID_En' => $idEncargado,
+                    'ID_S' => $data['ID_S'],
+                    'Est_en' => '0',
+                ]);
+                $encargadoEstado->save();
+                DB::commit();
+                return response()->json(['error' => false, 'message' => 'sede creada correctamente'], 201);
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json(['error' => true, 'message' => 'error al crear el encargado'], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 }

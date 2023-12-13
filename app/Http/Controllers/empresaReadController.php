@@ -114,7 +114,7 @@ class empresaReadController extends Controller
                         'error' => true,
                         'status' => 'error',
                         'message' => 'Empresa no encontrada',
-                        'data' => null,
+                        'data' => [],
                     ];
                 }
             } catch (\Exception $e) {
@@ -122,7 +122,7 @@ class empresaReadController extends Controller
                     'error' => true,
                     'status' => 'error',
                     'message' => 'Error al buscar la Empresa: ' . $e->getMessage(),
-                    'data' => null,
+                    'data' => [],
                 ];
             }
         } else {
@@ -130,7 +130,7 @@ class empresaReadController extends Controller
                 'error' => true,
                 'status' => 'error',
                 'message' => 'No autorizado',
-                'data' => null,
+                'data' => [],
             ], 401);
         }
     }

@@ -9,6 +9,7 @@ use App\Models\Encargado;
 use App\Models\EncargadoEstado;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\tokenController;
 
 class empresaCreateController extends Controller
 {
@@ -44,69 +45,79 @@ class empresaCreateController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
+        $token = $data['nToken'];
 
-        DB::beginTransaction();
+        if (app(tokenController::class)->token($token)) {
+        } else {
+            DB::beginTransaction();
 
-        try {
-            // Insertar en la tabla "empresa"
-            $empresa = new Empresa([
-                'Nit_E' => $data['Nit_E'],
-                'Nom_E' => $data['Nom_E'],
-                'Eml_E' => $data['Eml_E'],
-                'Nom_Rl' => $data['Nom_Rl'],
-                'ID_Doc' => $data['ID_Doc'],
-                'CC_Rl' => $data['CC_Rl'],
-                'telefonoGeneral' => $data['telefonoGeneral'],
-                'Val_E' => $data['Val_E'],
-                'Est_E' => $data['Est_E'],
-                'Fh_Afi' => $data['Fh_Afi'],
-                'fechaFinalizacion' => $data['fechaFinalizacion'],
-                'COD_SE' => $data['COD_SE'],
-                'COD_AE' => $data['COD_AE'],
-            ]);
-
-            $empresa->save();
-            $idEmpresa = $empresa->id_e;
-
-            // Insertar sedes
-            foreach ($data['sedes'] as $sedeData) {
-                $sede = new Sede([
-                    'Dic_S' => $sedeData['Dic_S'],
-                    'Sec_V' => $sedeData['Sec_V'],
-                    'est_sed' => '0',
-                    'id_e' => $idEmpresa
+            try {
+                // Insertar en la tabla "empresa"
+                $empresa = new Empresa([
+                    'Nit_E' => $data['Nit_E'],
+                    'Nom_E' => $data['Nom_E'],
+                    'Eml_E' => $data['Eml_E'],
+                    'Nom_Rl' => $data['Nom_Rl'],
+                    'ID_Doc' => $data['ID_Doc'],
+                    'CC_Rl' => $data['CC_Rl'],
+                    'telefonoGeneral' => $data['telefonoGeneral'],
+                    'Val_E' => $data['Val_E'],
+                    'Est_E' => $data['Est_E'],
+                    'Fh_Afi' => $data['Fh_Afi'],
+                    'fechaFinalizacion' => $data['fechaFinalizacion'],
+                    'COD_SE' => $data['COD_SE'],
+                    'COD_AE' => $data['COD_AE'],
                 ]);
 
-                $sede->save();
-                $idSede = $sede->ID_S;
+                $empresa->save();
+                $idEmpresa = $empresa->id_e;
 
-                // Insertar encargados para esta sede
-                foreach ($sedeData['encargados'] as $encargado) {
-                    $encargadoModel = new Encargado([
-                        'N_En' => $encargado['N_En'],
-                        'tel1' => $encargado['tel1'],
-                        'tel2' => $encargado['tel2'],
-                        'tel3' => $encargado['tel3'],
+                // Insertar sedes
+                foreach ($data['sedes'] as $sedeData) {
+                    $sede = new Sede([
+                        'Dic_S' => $sedeData['Dic_S'],
+                        'Sec_V' => $sedeData['Sec_V'],
+                        'est_sed' => '0',
+                        'id_e' => $idEmpresa
                     ]);
 
-                    $encargadoModel->save();
-                    $idEncargado = $encargadoModel->ID_En;
+                    $sede->save();
+                    $idSede = $sede->ID_S;
 
-                    //Insertar Encargado_Estado
-                    $encargadoEstado = new EncargadoEstado([
-                        'ID_En' => $idEncargado,
-                        'ID_S' => $idSede,
-                        'Est_en' => $encargado['Est_en'],
-                    ]);
-                    $encargadoEstado->save();
+                    // Insertar encargados para esta sede
+                    foreach ($sedeData['encargados'] as $encargado) {
+                        $encargadoModel = new Encargado([
+                            'N_En' => $encargado['N_En'],
+                            'tel1' => $encargado['tel1'],
+                            'tel2' => $encargado['tel2'],
+                            'tel3' => $encargado['tel3'],
+                        ]);
+
+                        $encargadoModel->save();
+                        $idEncargado = $encargadoModel->ID_En;
+
+                        //Insertar Encargado_Estado
+                        $encargadoEstado = new EncargadoEstado([
+                            'ID_En' => $idEncargado,
+                            'ID_S' => $idSede,
+                            'Est_en' => $encargado['Est_en'],
+                        ]);
+                        $encargadoEstado->save();
+                    }
                 }
-            }
 
-            DB::commit();
-            return response()->json(['error'=> false,'message' => 'Empresa creada con éxito'], 201); // 201 Created
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error'=>true, 'message' => 'Error al crear la empresa'], 500); // 500 Internal Server Error
+                DB::commit();
+                return response()->json(['error' => false, 'message' => 'Empresa creada con éxito'], 201); // 201 Created
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json(['error' => true, 'message' => 'Error al crear la empresa'], 500); // 500 Internal Server Error
+            }
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 
@@ -133,61 +144,72 @@ class empresaCreateController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        DB::beginTransaction();
+        $token = $data['nToken'];
 
-        try {
-            // Insertar en la tabla "empresa"
-            $empresa = new Empresa([
-                'Nit_E' => $data['Nit_E'],
-                'Nom_E' => $data['Nom_E'],
-                'Eml_E' => $data['Eml_E'],
-                'Est_E' => $data['Est_E'],
-                'Fh_Afi' => $data['Fh_Afi'],
-                'fechaFinalizacion' => $data['fechaFinalizacion'],
-                'COD_SE' => $data['COD_SE'],
-                'COD_AE' => $data['COD_AE'],
-            ]);
+        if (app(tokenController::class)->token($token)) {
+            DB::beginTransaction();
 
-            $empresa->save();
-            $idEmpresa = $empresa->id_e;
+            try {
+                // Insertar en la tabla "empresa"
+                $empresa = new Empresa([
+                    'Nit_E' => $data['Nit_E'],
+                    'Nom_E' => $data['Nom_E'],
+                    'Eml_E' => $data['Eml_E'],
+                    'Est_E' => $data['Est_E'],
+                    'Fh_Afi' => $data['Fh_Afi'],
+                    'fechaFinalizacion' => $data['fechaFinalizacion'],
+                    'COD_SE' => $data['COD_SE'],
+                    'COD_AE' => $data['COD_AE'],
+                ]);
 
-            // Insertar sedes
+                $empresa->save();
+                $idEmpresa = $empresa->id_e;
 
-            $sede = new Sede([
-                'Dic_S' => $data['Dic_S'],
-                'Sec_V' => $data['Sec_V'],
-                'est_sed' => '0',
-                'id_e' => $idEmpresa
-            ]);
+                // Insertar sedes
 
-            $sede->save();
-            $idSede = $sede->ID_S;
+                $sede = new Sede([
+                    'Dic_S' => $data['Dic_S'],
+                    'Sec_V' => $data['Sec_V'],
+                    'est_sed' => '0',
+                    'id_e' => $idEmpresa
+                ]);
 
-            // Insertar encargados para esta sede
+                $sede->save();
+                $idSede = $sede->ID_S;
 
-            $encargadoModel = new Encargado([
-                'N_En' => $data['N_En'],
-                'tel1' => $data['tel1'],
-            ]);
+                // Insertar encargados para esta sede
 
-            $encargadoModel->save();
-            $idEncargado = $encargadoModel->ID_En;
+                $encargadoModel = new Encargado([
+                    'N_En' => $data['N_En'],
+                    'tel1' => $data['tel1'],
+                ]);
 
-            //Insertar Encargado_Estado
-            $encargadoEstado = new EncargadoEstado([
-                'ID_En' => $idEncargado,
-                'ID_S' => $idSede,
-                'Est_en' => '0',
-            ]);
-            $encargadoEstado->save();
+                $encargadoModel->save();
+                $idEncargado = $encargadoModel->ID_En;
+
+                //Insertar Encargado_Estado
+                $encargadoEstado = new EncargadoEstado([
+                    'ID_En' => $idEncargado,
+                    'ID_S' => $idSede,
+                    'Est_en' => '0',
+                ]);
+                $encargadoEstado->save();
 
 
 
-            DB::commit();
-            return response()->json(['error'=> false, 'message' => 'Empresa creada con éxito'], 201); // 201 Created
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error'=> true, 'message' => 'Error al crear la empresa'], 500); // 500 Internal Server Error
+                DB::commit();
+                return response()->json(['error' => false, 'message' => 'Empresa creada con éxito'], 201); // 201 Created
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json(['error' => true, 'message' => 'Error al crear la empresa'], 500); // 500 Internal Server Error
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 }

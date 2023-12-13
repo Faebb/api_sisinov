@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Empresa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\tokenController;
 
 class updateEmpresaController extends Controller
 {
@@ -14,7 +15,7 @@ class updateEmpresaController extends Controller
         $update = Empresa::find($id);
 
         if (!$update) {
-            return response()->json(['error' => 'Empresa no encontrado'], 404);
+            return response()->json(['errors' => 'Empresa no encontrado'], 404);
         }
 
         $data = $request->all();
@@ -36,17 +37,27 @@ class updateEmpresaController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error'=> true, 'error' => $validator->errors()], 400);
+            return response()->json(['error' => true, 'error' => $validator->errors()], 400);
         }
 
-        $update->fill($data);
-        $update->save();
+        $token = $data['nToken'];
 
-        if ($update->save()) {
-            return response()->json(['error'=> false, 'message' => 'Empresa actualizada con éxito'], 200);
+        if (app(tokenController::class)->token($token)) {
+            $update->fill($data);
+            $update->save();
+
+            if ($update->save()) {
+                return response()->json(['error' => false, 'message' => 'Empresa actualizada con éxito'], 200);
+            } else {
+                return response()->json(['error' => true, 'message' => 'Error al actualizar la Empresa'], 500);
+            }
         } else {
-            return response()->json(['error'=> true, 'message' => 'Error al actualizar la Empresa'], 500);
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
-
     }
 }

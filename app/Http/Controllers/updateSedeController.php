@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Sede;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\tokenController;
 
 class updateSedeController extends Controller
 {
@@ -24,16 +25,26 @@ class updateSedeController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json(['errors' => $validator->errors()], 400);
         }
+        $token = $data['nToken'];
 
-        $update->fill($data);
-        $update->save();
+        if (app(tokenController::class)->token($token)) {
+            $update->fill($data);
+            $update->save();
 
-        if ($update->save()) {
-            return response()->json(['message' => 'Sede actualizada con éxito'], 200);
+            if ($update->save()) {
+                return response()->json(['error' => false, 'message' => 'Sede actualizada con éxito'], 200);
+            } else {
+                return response()->json(['error' => true, 'message' => 'Error al actualizar la Sede'], 500);
+            }
         } else {
-            return response()->json(['error' => 'Error al actualizar la Sede'], 500);
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 }
