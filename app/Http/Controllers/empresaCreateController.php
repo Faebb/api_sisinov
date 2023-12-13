@@ -48,7 +48,7 @@ class empresaCreateController extends Controller
         $token = $data['nToken'];
 
         if (app(tokenController::class)->token($token)) {
-        } else {
+        
             DB::beginTransaction();
 
             try {
@@ -110,7 +110,7 @@ class empresaCreateController extends Controller
                 return response()->json(['error' => false, 'message' => 'Empresa creada con éxito'], 201); // 201 Created
             } catch (\Exception $e) {
                 DB::rollBack();
-                return response()->json(['error' => true, 'message' => 'Error al crear la empresa'], 500); // 500 Internal Server Error
+                return response()->json(['error' => true, 'message' => 'Error al crear la empresa'. $e], 500); // 500 Internal Server Error
             }
             return response()->json([
                 'error' => true,

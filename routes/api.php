@@ -45,7 +45,7 @@ Route::group([], function () {
     Route::post('/empresas', [empresaReadController::class, 'index']);
     Route::post('/empresa/{id}', [empresaReadController::class, 'show']);
     Route::post('/empresas/{nit}', [empresaReadController::class, 'showForNit']);
-    Route::post('/sede', [empresaReadSedeController::class, 'index']);
+    Route::post('/sedes', [empresaReadSedeController::class, 'index']);
     Route::post('/sede/{id}', [empresaReadSedeController::class, 'show']);
     Route::post('/tdoc', [readTipoDocController::class, 'index']);
     Route::post('/tdoc/{id}', [readTipoDocController::class, 'show']);
