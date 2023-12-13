@@ -74,13 +74,13 @@ Route::group([], function(){
     Route::post('/novedadevidencia', [novedadCreateEvidenciaController::class, 'create']);
     Route::post('/tpnov', [novedadCreateTpNovedadController::class, 'create']);
     //metods get
-    Route::get('/novedad', [novedadReadController::class, 'index']);
-    Route::get('/novedad/{id}', [novedadReadController::class, 'show']);
-    Route::get('/tpnov', [novedadReadTpNovedadController::class, 'index']);
-    Route::get('/evidencia/{id}', [novedadReadEvidenciaController::class, 'show']);
-    Route::get('/novedadempresa', [novedadReadNovedadEmpresaController::class, 'index']);
-    Route::get('/novedadsede/{id}', [novedadReadNovedadSedeaController::class, 'show']);
-    Route::get('/novedadempleados', [novedadReadEmpleadoController::class, 'index']);
+    Route::post('/novedades', [novedadReadController::class, 'index']);
+    Route::post('/novedad/{id}', [novedadReadController::class, 'show']);
+    Route::post('/tpnovs', [novedadReadTpNovedadController::class, 'index']);
+    Route::post('/evidencia/{id}', [novedadReadEvidenciaController::class, 'show']);
+    Route::post('/novedadempresa', [novedadReadNovedadEmpresaController::class, 'index']);
+    Route::post('/novedadsede/{id}', [novedadReadNovedadSedeaController::class, 'show']);
+    Route::post('/novedadempleados', [novedadReadEmpleadoController::class, 'index']);
     //metodos put
     Route::put('/novedad', [novedadUpdateTpNovedadController::class, 'update']);
 })->name('Novedad'); 

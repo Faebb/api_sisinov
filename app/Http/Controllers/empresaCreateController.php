@@ -112,6 +112,7 @@ class empresaCreateController extends Controller
                 DB::rollBack();
                 return response()->json(['error' => true, 'message' => 'Error al crear la empresa'. $e], 500); // 500 Internal Server Error
             }
+        } else {
             return response()->json([
                 'error' => true,
                 'status' => 'error',

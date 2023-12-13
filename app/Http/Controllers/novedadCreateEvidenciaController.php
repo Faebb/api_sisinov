@@ -6,6 +6,7 @@ use App\Models\Evidencium;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\tokenController;
 
 class novedadCreateEvidenciaController extends Controller
 {
@@ -21,22 +22,32 @@ class novedadCreateEvidenciaController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
+        $token = $data['nToken'];
 
-        DB::beginTransaction();
+        if (app(tokenController::class)->token($token)) {
+            DB::beginTransaction();
 
-        try {
-            $evidencia = new Evidencium([
-                'adjunto' => $data['adjunto'],
-                'ID_Nov' => $data['ID_Nov'],
-            ]);
+            try {
+                $evidencia = new Evidencium([
+                    'adjunto' => $data['adjunto'],
+                    'ID_Nov' => $data['ID_Nov'],
+                ]);
 
-            $evidencia->save();
+                $evidencia->save();
 
-            DB::commit();
-            return response()->json(['message' => 'Envidencia creada con éxito'], 201);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['message' => 'Error al crear la Evidencia'], 500);
+                DB::commit();
+                return response()->json(['error' => false, 'message' => 'Envidencia creada con éxito'], 201);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json(['error' => true, 'message' => 'Error al crear la Evidencia'], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 }
