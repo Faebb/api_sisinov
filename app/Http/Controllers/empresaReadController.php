@@ -38,7 +38,7 @@ class empresaReadController extends Controller
                     'error' => true,
                     'status' => 'error',
                     'message' => 'Error al buscar las Empresas: ' . $e->getMessage(),
-                    'data' => null,
+                    'data' => [],
                 ], 500);
             }
         } else {
@@ -46,7 +46,7 @@ class empresaReadController extends Controller
                 'error' => true,
                 'status' => 'error',
                 'message' => 'No autorizado',
-                'data' => null,
+                'data' => [],
             ], 401);
         }
     }
