@@ -119,6 +119,6 @@ Route::group([], function () {
     Route::post('/repsedenov', [reporteController::class, 'repsedenov']);
     Route::post('/rephistnov', [reporteController::class, 'rephistnov']);
     Route::post('/repsedetpnov', [reporteController::class, 'repsedetpnov']);
-    Route::get('/readtrazabilidad', [reporteController::class, 'readtrazabilidad']);
+    Route::post('/readtrazabilidad', [reporteController::class, 'readtrazabilidad']);
 
 })->name('Reporte');
