@@ -103,16 +103,5 @@ class empresaReadController extends Controller
             ];
         }
     }
-    public function token($token)
-    {
-        $resuls = DB::table('token')
-            ->where('nToken', $token)
-            ->where('fechaVencimiento', '>', now())
-            ->count() > 0;
-        if ($resuls) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+   
 }
