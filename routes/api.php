@@ -94,7 +94,7 @@ Route::group([], function(){
     Route::post('/createcontemg', [empleadoCreateController::class, 'createcontemg']);
     //metodos get
     Route::get('/readveriemlempleado/{eml_em}', [empleadoReadController::class, 'readveriemlempleado']);
-    Route::get('/readverificarempleado/{id_doc}/{documento}', [empleadoReadController::class, 'readverificarempleado']);
+    Route::post('/readverificarempleado/{id_doc}/{documento}', [empleadoReadController::class, 'readverificarempleado']);
     Route::get('/readcontemg/{id}', [empleadoReadController::class, 'readcontemg']);
     Route::get('/readminempleado', [empleadoReadController::class, 'readminempleado']);
     Route::get('/readempleadoone/{id}', [empleadoReadController::class, 'readempleadoone']);
