@@ -295,4 +295,45 @@ class empleadoReadController extends Controller
             ], 401);
         }
     }
+    public function readveritelaggempleado(Request $request, $tel_em)
+    {
+        $data = $request->all();
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            try {
+
+                $result = DB::table('empleado')->where('tel_em', $tel_em)->get();
+
+                if ($result->isEmpty()) {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'error',
+                        'message' => 'Solicitud completada correctamente',
+                        'encontrado' => false,
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Solicitud completada correctamente',
+                        'encontrado' => true,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'status' => 'error',
+                    'message' => 'metodo no valido' . $e->getMessage()
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
+    }
 }
