@@ -98,10 +98,10 @@ Route::group([], function(){
     Route::post('/readveritelaggempleado/{tel}', [empleadoReadController::class, 'readveritelaggempleado']);
     Route::post('/readveritelempleado/{tel}', [empleadoReadController::class, 'readveritelempleado']);
     Route::post('/readverificarempleado/{id_doc}/{documento}', [empleadoReadController::class, 'readverificarempleado']);
-    Route::get('/readcontemg/{id}', [empleadoReadController::class, 'readcontemg']);
+    Route::post('/readcontemg/{id}', [empleadoReadController::class, 'readcontemg']);
     Route::post('/readminempleado', [empleadoReadController::class, 'readminempleado']);
     Route::post('/readempleadoone/{id}', [empleadoReadController::class, 'readempleadoone']);
-    Route::get('/readempleadoestado/{id}',[empleadoReadController::class, 'readempleadoestado']);
+    Route::post('/readempleadoestado/{id}',[empleadoReadController::class, 'readempleadoestado']);
     Route::post('/readperfil', [empleadoReadController::class, 'readperfil']);
     Route::post('/rol', [empleadoReadController::class, 'rol']);
     Route::post('/rh', [empleadoReadController::class, 'rh']);
@@ -109,6 +109,7 @@ Route::group([], function(){
     Route::post('/pensiones', [empleadoReadController::class, 'pensiones']);
     Route::post('/cesantias', [empleadoReadController::class, 'cesantias']);
     Route::post('/arl', [empleadoReadController::class, 'arl']);
+    Route::post('/readempleadorol', [empleadoReadController::class, 'readempleadorol']);
     //metodos put
     Route::put('/updatecontemg', [empleadoUptadeController::class, 'updatecontemg']);
     Route::put('updateempleadoinfoone',[empleadoUptadeController::class, 'updateempleadoinfoone']);

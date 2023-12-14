@@ -95,34 +95,46 @@ class empleadoReadController extends Controller
 
 
 
-    public function readcontemg($id)
+    public function readcontemg(Request $request, $id)
     {
-        if (!empty($id)) {
-            try {
-                $result = DB::table('contacto_emergencia')
-                    ->where('id_em', $id)
-                    ->get(['ID_CEm', 'N_CoE', 'Csag', 'T_CEm']);
+        $data = $request->all();
+        $token = $data['nToken'];
 
-                if ($result->isEmpty()) {
+        if (app(tokenController::class)->token($token)) {
+            if (!empty($id)) {
+                try {
+                    $result = DB::table('contacto_emergencia')
+                        ->where('id_em', $id)
+                        ->get(['ID_CEm', 'N_CoE', 'Csag', 'T_CEm']);
 
-                    $response['error'] = false;
-                    $response['message'] = 'Solicitud completada correctamente';
-                    $response['contenido'] = array();
-                } else {
-                    $response['error'] = false;
-                    $response['message'] = 'Solicitud completada correctamente';
-                    $response['contenido'] = $result;
+                    if ($result->isEmpty()) {
+
+                        $response['error'] = false;
+                        $response['message'] = 'Solicitud completada correctamente';
+                        $response['contenido'] = array();
+                    } else {
+                        $response['error'] = false;
+                        $response['message'] = 'Solicitud completada correctamente';
+                        $response['contenido'] = $result;
+                    }
+                } catch (\Exception $e) {
+                    $response['error'] = true;
+                    $response['message'] = 'Error occurred';
                 }
-            } catch (\Exception $e) {
+            } else {
                 $response['error'] = true;
-                $response['message'] = 'Error occurred';
+                $response['message'] = 'Ingrese el id del empleado';
             }
-        } else {
-            $response['error'] = true;
-            $response['message'] = 'Ingrese el id del empleado';
-        }
 
-        return response()->json($response);
+            return response()->json($response);
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
     }
 
     public function readminempleado(Request $request)
@@ -178,7 +190,7 @@ class empleadoReadController extends Controller
                     ->select('id_em', 'n_em', 'a_em', 'eml_em', 'id_rh', 'id_doc', 'documento', 'tel_em', 'barloc_em', 'dir_em', 'lib_em', 'lic_emp', 'contrato', 'id_eps', 'estado', 'id_ces', 'id_pens', 'id_arl')
                     ->where('id_em', $id)
                     ->get();
-    
+
                 if ($result->isEmpty()) {
                     return response()->json([
                         'error' => true,
@@ -210,35 +222,47 @@ class empleadoReadController extends Controller
         }
     }
 
-    public function readempleadoestado($id)
+    public function readempleadoestado(Request $request, $id)
     {
-        try {
-            $result = DB::table('empleado')
-                ->select('id_em', 'estado')
-                ->where('id_em', $id)
-                ->get();
+        $data = $request->all();
+        $token = $data['nToken'];
 
-            if ($result->isEmpty()) {
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $result = DB::table('empleado')
+                    ->select('id_em', 'estado')
+                    ->where('id_em', $id)
+                    ->get();
+
+                if ($result->isEmpty()) {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No results found',
+                        'data' => [],
+                    ], 404);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'data' => $result,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
                 return response()->json([
                     'error' => true,
                     'status' => 'error',
-                    'message' => 'No results found',
+                    'message' => 'metodo no valido' . $e->getMessage(),
                     'data' => [],
-                ], 404);
-            } else {
-                return response()->json([
-                    'error' => false,
-                    'status' => 'success',
-                    'data' => $result,
-                ], 200);
+                ], 500);
             }
-        } catch (\Exception $e) {
+        } else {
             return response()->json([
                 'error' => true,
                 'status' => 'error',
-                'message' => 'metodo no valido' . $e->getMessage(),
+                'message' => 'No autorizado',
                 'data' => [],
-            ], 500);
+            ], 401);
         }
     }
     public function rol(Request $request)
@@ -559,6 +583,49 @@ class empleadoReadController extends Controller
                     'status' => 'error',
                     'message' => 'metodo no valido' . $e->getMessage()
                 ], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
+    }
+    public function readempleadorol(Request $request, $id)
+    {
+        $data = $request->all();
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            try {
+                // Obtener el id_rol asociado al id_empleado
+                $id_rol = DB::table('user_rol')
+                    ->whereIn('id_log', function ($query) use ($id) {
+                        $query->select('id_log')
+                            ->from('login')
+                            ->where('id_em', $id);
+                    })
+                    ->value('id_rol');
+
+                if ($id_rol) {
+                    return response()->json([
+                        'error' => false,
+                        'message' => 'Solicitud completada correctamente',
+                        'id_rol' => $id_rol,
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'No se encontró un id_rol válido',
+                    ], 404);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Método de solicitud no válido: ' . $e->getMessage(),
+                ], 400);
             }
         } else {
             return response()->json([
