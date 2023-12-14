@@ -8,33 +8,45 @@ use Illuminate\Support\Facades\Validator;
 
 class empleadoReadController extends Controller
 {
-    public function readveriemlempleado($eml_em)
+    public function readveriemlempleado(Request $request, $eml_em)
     {
-        try {
+        $data = $request->all();
+        $token = $data['nToken'];
 
-            $result = DB::table('empleado')->where('eml_em', $eml_em)->get();
+        if (app(tokenController::class)->token($token)) {
+            try {
 
-            if ($result->isEmpty()) {
+                $result = DB::table('empleado')->where('eml_em', $eml_em)->get();
+
+                if ($result->isEmpty()) {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'error',
+                        'message' => 'Solicitud completada correctamente',
+                        'encontrado' => false,
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Solicitud completada correctamente',
+                        'encontrado' => true,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
                 return response()->json([
-                    'error' => false,
+                    'error' => true,
                     'status' => 'error',
-                    'message' => 'Solicitud completada correctamente',
-                    'encontrado' => false,
-                ], 200);
-            } else {
-                return response()->json([
-                    'error' => false,
-                    'status' => 'success',
-                    'message' => 'Solicitud completada correctamente',
-                    'encontrado' => true,
-                ], 200);
+                    'message' => 'metodo no valido' . $e->getMessage()
+                ], 500);
             }
-        } catch (\Exception $e) {
+        } else {
             return response()->json([
                 'error' => true,
                 'status' => 'error',
-                'message' => 'metodo no valido' . $e->getMessage()
-            ], 500);
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
     public function readverificarempleado(Request $request, $id_doc, $documento)
@@ -48,7 +60,7 @@ class empleadoReadController extends Controller
                     ->where('id_doc', $id_doc)
                     ->where('documento', $documento)
                     ->get();
-    
+
                 if ($result->isEmpty()) {
                     error_log('Empleado NO encontrado en la base de datos');
                     $response['error'] = false;
@@ -73,10 +85,6 @@ class empleadoReadController extends Controller
                 'data' => [],
             ], 401);
         }
-
-        
-
-        
     }
 
 
