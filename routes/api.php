@@ -109,14 +109,13 @@ Route::group([], function(){
     Route::post('/pensiones', [empleadoReadController::class, 'pensiones']);
     Route::post('/cesantias', [empleadoReadController::class, 'cesantias']);
     Route::post('/arl', [empleadoReadController::class, 'arl']);
-    Route::post('/readempleadorol', [empleadoReadController::class, 'readempleadorol']);
+    Route::post('/readempleadorol/{id}', [empleadoReadController::class, 'readempleadorol']);
     //metodos put
     Route::put('/updatecontemg', [empleadoUptadeController::class, 'updatecontemg']);
     Route::put('updateempleadoinfoone',[empleadoUptadeController::class, 'updateempleadoinfoone']);
     Route::put('/updateestadoempleado', [empleadoUptadeController::class, 'updateestadoempleado']);
     Route::put('/updateperfil', [empleadoUptadeController::class, 'updateperfil']);
     //metodos delete
-    Route::delete();
 })->name('Empleado'); 
 
 //Reportes
