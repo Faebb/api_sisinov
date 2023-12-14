@@ -179,6 +179,51 @@ class empleadoReadController extends Controller
         }
     }
 
+    public function readperfil(Request $request)
+    {
+        $data = $request->all();
+
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            $id = $data['id_em'];
+
+            try {
+                // Obtener el perfil asociado al id_empleado
+                $perfil = DB::table('empleado')
+                    ->where('id_em', $id)
+                    ->select('id_em', 'n_em', 'a_em', 'eml_em', 'dir_em', 'lic_emp', 'tel_em', 'barloc_em')
+                    ->get();
+
+                if ($perfil->isEmpty()) {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'Fallo: No se encontró un perfil válido',
+                    ], 404);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'message' => 'Solicitud completada correctamente',
+                        'contenido' => $perfil,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Error occurred: ' . $e->getMessage(),
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
+    }
+
+
     public function readempleadoone(Request $request, $id)
     {
         $data = $request->all();

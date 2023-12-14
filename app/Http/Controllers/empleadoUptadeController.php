@@ -10,6 +10,7 @@ class empleadoUptadeController extends Controller
 {
     public function updatecontemg(Request $request)
     {
+        $data = $request->all();
         $validator = Validator::make($request->all(), [
             'N_CoE' => 'required|string',
             'Csag' => 'required|string',
@@ -25,36 +26,47 @@ class empleadoUptadeController extends Controller
             return response()->json($response, 422);
         }
 
-        $datosModel = $request->all();
 
-        try {
-            $affectedRows = DB::table('contacto_emergencia')
-                ->where('ID_CEm', $datosModel['ID_CEm'])
-                ->update([
-                    'N_CoE' => $datosModel['N_CoE'],
-                    'Csag' => $datosModel['Csag'],
-                    'T_CEm' => $datosModel['T_CEm'],
-                ]);
+        $token = $data['nToken'];
 
-            if ($affectedRows > 0) {
-                $response = array(
-                    'error' => false,
-                    'message' => 'Contacto de emergencia actualizado con éxito',
-                );
-                return response()->json($response, 200);
-            } else {
+        if (app(tokenController::class)->token($token)) {
+            $datosModel = $request->all();
+            try {
+                $affectedRows = DB::table('contacto_emergencia')
+                    ->where('ID_CEm', $datosModel['ID_CEm'])
+                    ->update([
+                        'N_CoE' => $datosModel['N_CoE'],
+                        'Csag' => $datosModel['Csag'],
+                        'T_CEm' => $datosModel['T_CEm'],
+                    ]);
+
+                if ($affectedRows > 0) {
+                    $response = array(
+                        'error' => false,
+                        'message' => 'Contacto de emergencia actualizado con éxito',
+                    );
+                    return response()->json($response, 200);
+                } else {
+                    $response = array(
+                        'error' => true,
+                        'message' => 'Ocurrió un error al actualizar el contacto de emergencia',
+                    );
+                    return response()->json($response, 200);
+                }
+            } catch (\Exception $e) {
                 $response = array(
                     'error' => true,
-                    'message' => 'Ocurrió un error al actualizar el contacto de emergencia',
+                    'message' => 'Método de solicitud no válido',
                 );
-                return response()->json($response, 200);
+                return response()->json($response, 500);
             }
-        } catch (\Exception $e) {
-            $response = array(
+        } else {
+            return response()->json([
                 'error' => true,
-                'message' => 'Método de solicitud no válido',
-            );
-            return response()->json($response, 500);
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 
@@ -139,6 +151,7 @@ class empleadoUptadeController extends Controller
     }
     public function updateempleadoinfoone(Request $request)
     {
+
         $data = $request->all();
 
         $validator = Validator::make($data, [
@@ -170,158 +183,193 @@ class empleadoUptadeController extends Controller
             ], 422);
         }
 
-        try {
-            $result = DB::table('empleado')
-                ->where('id_em', $data["id_em"])
-                ->update([
-                    'id_doc' => $data["id_doc"],
-                    'documento' => $data["documento"],
-                    'n_em' => $data["n_em"],
-                    'a_em' => $data["a_em"],
-                    'eml_em' => $data["eml_em"],
-                    'dir_em' => $data["dir_em"],
-                    'lic_emp' => $data["lic_emp"],
-                    'lib_em' => $data["lib_em"],
-                    'tel_em' => $data["tel_em"],
-                    'barloc_em' => $data["barloc_em"],
-                    'id_rh' => $data["id_rh"],
-                    'contrato' => $data["contrato"],
-                    'id_pens' => $data["id_pens"],
-                    'id_eps' => $data["id_eps"],
-                    'id_arl' => $data["id_arl"],
-                    'id_ces' => $data["id_ces"]
-                ]);
+        $token = $data['nToken'];
 
-            if ($result) {
-                return response()->json([
-                    'error' => false,
-                    'status' => 'success',
-                    'message' => 'Update successful',
-                    'data' => [],
-                ], 200);
-            } else {
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $result = DB::table('empleado')
+                    ->where('id_em', $data["id_em"])
+                    ->update([
+                        'id_doc' => $data["id_doc"],
+                        'documento' => $data["documento"],
+                        'n_em' => $data["n_em"],
+                        'a_em' => $data["a_em"],
+                        'eml_em' => $data["eml_em"],
+                        'dir_em' => $data["dir_em"],
+                        'lic_emp' => $data["lic_emp"],
+                        'lib_em' => $data["lib_em"],
+                        'tel_em' => $data["tel_em"],
+                        'barloc_em' => $data["barloc_em"],
+                        'id_rh' => $data["id_rh"],
+                        'contrato' => $data["contrato"],
+                        'id_pens' => $data["id_pens"],
+                        'id_eps' => $data["id_eps"],
+                        'id_arl' => $data["id_arl"],
+                        'id_ces' => $data["id_ces"]
+                    ]);
+
+                if ($result) {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Update successful',
+                        'data' => [],
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No update was made',
+                        'data' => [],
+                    ], 200);
+                }
+            } catch (\Exception $e) {
                 return response()->json([
                     'error' => true,
                     'status' => 'error',
-                    'message' => 'No update was made',
+                    'message' => 'metodo no valido' . $e->getMessage(),
                     'data' => [],
-                ], 200);
+                ], 500);
             }
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => true,
-                'status' => 'error',
-                'message' => 'metodo no valido' . $e->getMessage(),
-                'data' => [],
-            ], 500);
-        }
-    }
-    public function updateestadoempleado(Request $request)
-{
-    $data = $request->all();
-
-    $validator = Validator::make($data, [
-        'id_em' => 'required|integer',
-        'estado' => 'required|string'
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'error' => true,
-            'status' => 'error',
-            'message' => 'Validation failed',
-            'data' => $validator->errors(),
-        ], 422);
-    }
-
-    try {
-        $result = DB::table('empleado')
-            ->where('id_em', $data["id_em"])
-            ->update([
-                'estado' => $data["estado"]
-            ]);
-
-        if ($result) {
-            return response()->json([
-                'error' => false,
-                'status' => 'success',
-                'message' => 'Update successful',
-                'data' => [],
-            ], 200);
         } else {
             return response()->json([
                 'error' => true,
                 'status' => 'error',
-                'message' => 'No update was made',
+                'message' => 'No autorizado',
                 'data' => [],
-            ], 200);
+            ], 401);
         }
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => true,
-            'status' => 'error',
-            'message' => 'metodo no valido' . $e->getMessage(),
-            'data' => [],
-        ], 500);
     }
-}
-public function updateperfil(Request $request){
-    $data = $request->all();
+    public function updateestadoempleado(Request $request)
+    {
 
-    $validator = Validator::make($data, [
-        'id_em' => 'required|integer',
-        'n_em' => 'string',
-        'a_em' => 'string',
-        'eml_em' => 'email',
-        'dir_em' => 'string',
-        'lic_emp' => 'string',
-        'tel_em' => 'string',
-        'barloc_em' => 'string',
-    ]);
+        $data = $request->all();
 
-    if ($validator->fails()) {
-        return response()->json([
-            'error' => true,
-            'message' => $validator->errors(),
-        ], 400);
-    }
+        $validator = Validator::make($data, [
+            'id_em' => 'required|integer',
+            'estado' => 'required|string'
+        ]);
 
-    try {
-        $result = DB::table('empleado')
-            ->where('id_em', $data["id_em"])
-            ->update([
-                'n_em' => $data["n_em"],
-                'a_em' => $data["a_em"],
-                'eml_em' => $data["eml_em"],
-                'dir_em' => $data["dir_em"],
-                'lic_emp' => $data["lic_emp"],
-                'tel_em' => $data["tel_em"],
-                'barloc_em' => $data["barloc_em"]
-            ]);
-
-            if ($result) {
-                return response()->json([
-                    'error' => false,
-                    'status' => 'success',
-                    'message' => 'Update successful',
-                    'data' => [],
-                ], 200);
-            } else {
-                return response()->json([
-                    'error' => true,
-                    'status' => 'error',
-                    'message' => 'No update was made',
-                    'data' => [],
-                ], 200);
-            }
-        } catch (\Exception $e) {
+        if ($validator->fails()) {
             return response()->json([
                 'error' => true,
                 'status' => 'error',
-                'message' => 'metodo no valido' . $e->getMessage(),
-                'data' => [],
-            ], 500);
+                'message' => 'Validation failed',
+                'data' => $validator->errors(),
+            ], 422);
         }
-}
+        $data = $request->all();
+        $token = $data['nToken'];
 
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $result = DB::table('empleado')
+                    ->where('id_em', $data["id_em"])
+                    ->update([
+                        'estado' => $data["estado"]
+                    ]);
+
+                if ($result) {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Update successful',
+                        'data' => [],
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No update was made',
+                        'data' => [],
+                    ], 200);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'status' => 'error',
+                    'message' => 'metodo no valido' . $e->getMessage(),
+                    'data' => [],
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
+    }
+    public function updateperfil(Request $request)
+    {
+
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'id_em' => 'required|integer',
+            'n_em' => 'string',
+            'a_em' => 'string',
+            'eml_em' => 'email',
+            'dir_em' => 'string',
+            'lic_emp' => 'string',
+            'tel_em' => 'string',
+            'barloc_em' => 'string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => true,
+                'message' => $validator->errors(),
+            ], 400);
+        }
+        $data = $request->all();
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $result = DB::table('empleado')
+                    ->where('id_em', $data["id_em"])
+                    ->update([
+                        'n_em' => $data["n_em"],
+                        'a_em' => $data["a_em"],
+                        'eml_em' => $data["eml_em"],
+                        'dir_em' => $data["dir_em"],
+                        'lic_emp' => $data["lic_emp"],
+                        'tel_em' => $data["tel_em"],
+                        'barloc_em' => $data["barloc_em"]
+                    ]);
+
+                if ($result) {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Update successful',
+                        'data' => [],
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No update was made',
+                        'data' => [],
+                    ], 200);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'status' => 'error',
+                    'message' => 'metodo no valido' . $e->getMessage(),
+                    'data' => [],
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
+    }
 }
