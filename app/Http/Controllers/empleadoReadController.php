@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Arl;
+use App\Models\Ep;
+use App\Models\Pensione;
 use App\Models\Rh;
 use App\Models\Rol;
 use Illuminate\Http\Request;
@@ -295,6 +298,170 @@ class empleadoReadController extends Controller
             ], 401);
         }
     }
+    public function eps(Request $request)
+    {
+        $data = $request->all();
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $eps = Ep::all();
+
+                if ($eps->isEmpty()) {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No se encontraron EPS',
+                        'data' => [],
+                    ], 404);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'EPS encontrados correctamente',
+                        'data' => $eps,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'status' => 'error',
+                    'message' => 'Error al buscar la EPS: ' . $e->getMessage(),
+                    'data' => [],
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
+    }
+    public function pensiones(Request $request)
+    {
+        $data = $request->all();
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $pensiones = Pensione::all();
+
+                if ($pensiones->isEmpty()) {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No se encontraron pensiones',
+                        'data' => [],
+                    ], 404);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Pensiones encontrados correctamente',
+                        'data' => $pensiones,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'status' => 'error',
+                    'message' => 'Error al buscar la Pensiones: ' . $e->getMessage(),
+                    'data' => [],
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
+    }
+    public function cesantias(Request $request)
+    {
+        $data = $request->all();
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $cesantias = Pensione::all();
+
+                if ($cesantias->isEmpty()) {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No se encontraron cesantias',
+                        'data' => [],
+                    ], 404);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Cesantias encontrados correctamente',
+                        'data' => $cesantias,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'status' => 'error',
+                    'message' => 'Error al buscar la cesantias: ' . $e->getMessage(),
+                    'data' => [],
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
+    }
+    public function arl(Request $request)
+    {
+        $data = $request->all();
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $arl = Arl::all();
+
+                if ($arl->isEmpty()) {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No se encontraron ARLs',
+                        'data' => [],
+                    ], 404);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'ARLs encontrados correctamente',
+                        'data' => $arl,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'status' => 'error',
+                    'message' => 'Error al buscar las ARLs: ' . $e->getMessage(),
+                    'data' => [],
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
+    }
     public function readveritelaggempleado(Request $request, $tel_em)
     {
         $data = $request->all();
@@ -304,6 +471,47 @@ class empleadoReadController extends Controller
             try {
 
                 $result = DB::table('empleado')->where('tel_em', $tel_em)->get();
+
+                if ($result->isEmpty()) {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'error',
+                        'message' => 'Solicitud completada correctamente',
+                        'encontrado' => false,
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Solicitud completada correctamente',
+                        'encontrado' => true,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'status' => 'error',
+                    'message' => 'metodo no valido' . $e->getMessage()
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
+    }
+    public function readveritelempleado(Request $request, $t_cem)
+    {
+        $data = $request->all();
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            try {
+
+                $result = DB::table('contacto_emergencia')->where('t_cem', $t_cem)->get();
 
                 if ($result->isEmpty()) {
                     return response()->json([

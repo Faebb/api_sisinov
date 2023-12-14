@@ -83,7 +83,7 @@ Route::group([], function(){
     Route::post('/novedadempleados', [novedadReadEmpleadoController::class, 'index']);
     //metodos put
     Route::put('/novedad', [novedadUpdateTpNovedadController::class, 'update']);
-    Route::put('/tnov', [novedadUpdateTpNovedadController::class, 'updatetpnovedad']);
+    Route::put('/tpnov', [novedadUpdateTpNovedadController::class, 'updatetpnovedad']);
 })->name('Novedad'); 
 
 
@@ -96,6 +96,7 @@ Route::group([], function(){
     //metodos get
     Route::post('/readveriemlempleado/{eml_em}', [empleadoReadController::class, 'readveriemlempleado']);
     Route::post('/readveritelaggempleado/{tel}', [empleadoReadController::class, 'readveritelaggempleado']);
+    Route::post('/readveritelaggempleado/{tel}', [empleadoReadController::class, 'readveritelaggempleado']);
     Route::post('/readverificarempleado/{id_doc}/{documento}', [empleadoReadController::class, 'readverificarempleado']);
     Route::get('/readcontemg/{id}', [empleadoReadController::class, 'readcontemg']);
     Route::get('/readminempleado', [empleadoReadController::class, 'readminempleado']);
@@ -104,6 +105,10 @@ Route::group([], function(){
     Route::post('/readperfil', [empleadoReadController::class, 'readperfil']);
     Route::post('/rol', [empleadoReadController::class, 'rol']);
     Route::post('/rh', [empleadoReadController::class, 'rh']);
+    Route::post('/eps', [empleadoReadController::class, 'eps']);
+    Route::post('/pensiones', [empleadoReadController::class, 'pensiones']);
+    Route::post('/cesantias', [empleadoReadController::class, 'cesantias']);
+    Route::post('/arl', [empleadoReadController::class, 'arl']);
     //metodos put
     Route::put('/updatecontemg', [empleadoUptadeController::class, 'updatecontemg']);
     Route::put('updateempleadoinfoone',[empleadoUptadeController::class, 'updateempleadoinfoone']);
