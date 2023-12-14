@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Arl;
+use App\Models\Cesantia;
 use App\Models\Ep;
 use App\Models\Pensione;
 use App\Models\Rh;
@@ -387,7 +388,7 @@ class empleadoReadController extends Controller
 
         if (app(tokenController::class)->token($token)) {
             try {
-                $cesantias = Pensione::all();
+                $cesantias = Cesantia::all();
 
                 if ($cesantias->isEmpty()) {
                     return response()->json([
