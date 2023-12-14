@@ -167,34 +167,46 @@ class empleadoReadController extends Controller
         }
     }
 
-    public function readempleadoone($id)
+    public function readempleadoone(Request $request, $id)
     {
-        try {
-            $result = DB::table('empleado')
-                ->select('id_em', 'n_em', 'a_em', 'eml_em', 'id_rh', 'id_doc', 'documento', 'tel_em', 'barloc_em', 'dir_em', 'lib_em', 'lic_emp', 'contrato', 'id_eps', 'estado', 'id_ces', 'id_pens', 'id_arl')
-                ->where('id_em', $id)
-                ->get();
+        $data = $request->all();
+        $token = $data['nToken'];
 
-            if ($result->isEmpty()) {
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $result = DB::table('empleado')
+                    ->select('id_em', 'n_em', 'a_em', 'eml_em', 'id_rh', 'id_doc', 'documento', 'tel_em', 'barloc_em', 'dir_em', 'lib_em', 'lic_emp', 'contrato', 'id_eps', 'estado', 'id_ces', 'id_pens', 'id_arl')
+                    ->where('id_em', $id)
+                    ->get();
+    
+                if ($result->isEmpty()) {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No results found',
+                        'data' => [],
+                    ], 404);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'data' => $result,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
                 return response()->json([
                     'error' => true,
                     'status' => 'error',
-                    'message' => 'No results found',
-                    'data' => [],
-                ], 404);
-            } else {
-                return response()->json([
-                    'error' => false,
-                    'status' => 'success',
-                    'data' => $result,
-                ], 200);
+                    'message' => 'metodo no valido' . $e->getMessage()
+                ], 500);
             }
-        } catch (\Exception $e) {
+        } else {
             return response()->json([
                 'error' => true,
                 'status' => 'error',
-                'message' => 'metodo no valido' . $e->getMessage()
-            ], 500);
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 

@@ -99,8 +99,8 @@ Route::group([], function(){
     Route::post('/readveritelempleado/{tel}', [empleadoReadController::class, 'readveritelempleado']);
     Route::post('/readverificarempleado/{id_doc}/{documento}', [empleadoReadController::class, 'readverificarempleado']);
     Route::get('/readcontemg/{id}', [empleadoReadController::class, 'readcontemg']);
-    Route::get('/readminempleado', [empleadoReadController::class, 'readminempleado']);
-    Route::get('/readempleadoone/{id}', [empleadoReadController::class, 'readempleadoone']);
+    Route::post('/readminempleado', [empleadoReadController::class, 'readminempleado']);
+    Route::post('/readempleadoone/{id}', [empleadoReadController::class, 'readempleadoone']);
     Route::get('/readempleadoestado/{id}',[empleadoReadController::class, 'readempleadoestado']);
     Route::post('/readperfil', [empleadoReadController::class, 'readperfil']);
     Route::post('/rol', [empleadoReadController::class, 'rol']);
