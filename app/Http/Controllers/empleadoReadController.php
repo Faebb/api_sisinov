@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Rol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -211,38 +212,45 @@ class empleadoReadController extends Controller
             ], 500);
         }
     }
-
-    public function readperfil(Request $request)
+    public function rol(Request $request)
     {
         $data = $request->all();
-        $id = $data['id'];
-        try {
-            $result = DB::table('empleado')
-                ->select('id_em', 'n_em', 'a_em', 'eml_em', 'dir_em', 'lic_emp', 'tel_em', 'barloc_em')
-                ->where('id_em', $id)
-                ->get();
+        $token = $data['nToken'];
 
-            if ($result->isEmpty()) {
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $rol = Rol::all();
+
+                if ($rol->isEmpty()) {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No se encontraron roles',
+                        'data' => [],
+                    ], 404);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Roles encontrados correctamente',
+                        'data' => $rol,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
                 return response()->json([
                     'error' => true,
                     'status' => 'error',
-                    'message' => 'No results found',
+                    'message' => 'Error al buscar el rol: ' . $e->getMessage(),
                     'data' => [],
-                ], 404);
-            } else {
-                return response()->json([
-                    'error' => false,
-                    'status' => 'success',
-                    'data' => $result,
-                ], 200);
+                ], 500);
             }
-        } catch (\Exception $e) {
+        } else {
             return response()->json([
                 'error' => true,
                 'status' => 'error',
-                'message' => 'metodo no valido' . $e->getMessage(),
+                'message' => 'No autorizado',
                 'data' => [],
-            ], 500);
+            ], 401);
         }
     }
 }
