@@ -125,33 +125,45 @@ class empleadoReadController extends Controller
         return response()->json($response);
     }
 
-    public function readminempleado()
+    public function readminempleado(Request $request)
     {
-        try {
-            $result = DB::table('empleado')
-                ->select('id_em', 'documento', 'n_em', 'a_em', 'eml_em', 'tel_em', 'estado')
-                ->get();
+        $data = $request->all();
+        $token = $data['nToken'];
 
-            if ($result->isEmpty()) {
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $result = DB::table('empleado')
+                    ->select('id_em', 'documento', 'n_em', 'a_em', 'eml_em', 'tel_em', 'estado')
+                    ->get();
+
+                if ($result->isEmpty()) {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No results found',
+                        'data' => [],
+                    ], 404);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'data' => $result,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
                 return response()->json([
                     'error' => true,
                     'status' => 'error',
-                    'message' => 'No results found',
-                    'data' => [],
-                ], 404);
-            } else {
-                return response()->json([
-                    'error' => false,
-                    'status' => 'success',
-                    'data' => $result,
-                ], 200);
+                    'message' => 'metodo no valido' . $e->getMessage()
+                ], 500);
             }
-        } catch (\Exception $e) {
+        } else {
             return response()->json([
                 'error' => true,
                 'status' => 'error',
-                'message' => 'metodo no valido' . $e->getMessage()
-            ], 500);
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
     }
 
@@ -512,7 +524,7 @@ class empleadoReadController extends Controller
         if (app(tokenController::class)->token($token)) {
             try {
 
-                $result = DB::table('contacto_emergencia')->where('t_cem', $t_cem)->get();
+                $result = DB::table('contacto_emergencia')->where('T_CEm', $t_cem)->get();
 
                 if ($result->isEmpty()) {
                     return response()->json([
