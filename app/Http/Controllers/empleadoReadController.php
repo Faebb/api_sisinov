@@ -37,33 +37,46 @@ class empleadoReadController extends Controller
             ], 500);
         }
     }
-    public function readverificarempleado($id_doc, $documento)
+    public function readverificarempleado(Request $request, $id_doc, $documento)
     {
+        $data = $request->all();
+        $token = $data['nToken'];
 
-
-        try {
-            $result = DB::table('empleado')
-                ->where('id_doc', $id_doc)
-                ->where('documento', $documento)
-                ->get();
-
-            if ($result->isEmpty()) {
-                error_log('Empleado NO encontrado en la base de datos');
-                $response['error'] = false;
-                $response['message'] = 'Solicitud completada correctamente';
-                $response['encontrado'] = false;
-            } else {
-                error_log('Empleado encontrado en la base de datos');
-                $response['error'] = false;
-                $response['message'] = 'Solicitud completada correctamente';
-                $response['encontrado'] = true;
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $result = DB::table('empleado')
+                    ->where('id_doc', $id_doc)
+                    ->where('documento', $documento)
+                    ->get();
+    
+                if ($result->isEmpty()) {
+                    error_log('Empleado NO encontrado en la base de datos');
+                    $response['error'] = false;
+                    $response['message'] = 'Solicitud completada correctamente';
+                    $response['encontrado'] = false;
+                } else {
+                    error_log('Empleado encontrado en la base de datos');
+                    $response['error'] = false;
+                    $response['message'] = 'Solicitud completada correctamente';
+                    $response['encontrado'] = true;
+                }
+            } catch (\Exception $e) {
+                $response['error'] = true;
+                $response['message'] = 'Error occurred';
             }
-        } catch (\Exception $e) {
-            $response['error'] = true;
-            $response['message'] = 'Error occurred';
+            return response()->json($response);
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
         }
 
-        return response()->json($response);
+        
+
+        
     }
 
 
@@ -224,7 +237,4 @@ class empleadoReadController extends Controller
             ], 500);
         }
     }
-
-   
-    
 }
