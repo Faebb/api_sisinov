@@ -516,7 +516,7 @@ class empleadoReadController extends Controller
 
                 if ($result->isEmpty()) {
                     return response()->json([
-                        'error' => true,
+                        'error' => false,
                         'status' => 'error',
                         'message' => 'Solicitud completada correctamente',
                         'encontrado' => false,
