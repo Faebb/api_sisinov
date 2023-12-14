@@ -115,8 +115,10 @@ Route::group([], function(){
     Route::put('updateempleadoinfoone',[empleadoUptadeController::class, 'updateempleadoinfoone']);
     Route::put('/updateestadoempleado', [empleadoUptadeController::class, 'updateestadoempleado']);
     Route::put('/updateperfil', [empleadoUptadeController::class, 'updateperfil']);
+    Route::put('/updaterol', [empleadoUptadeController::class, 'updaterol']);
+
     //metodos delete
-    Route::delete();
+   Route::delete('/deletecontemg', [empleadoUptadeController::class, 'deletecontemg']);
 })->name('Empleado'); 
 
 //Reportes
