@@ -130,10 +130,10 @@ class empleadoCreateController extends Controller
     public function createcontemg(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'N_CoE' => 'required|string',
-            'Csag' => 'required|string',
+            'n_coe' => 'required|string',
+            'csag' => 'required|string',
             'id_em' => 'required|integer',
-            'T_CEm' => 'required|string',
+            't_cem' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -148,10 +148,10 @@ class empleadoCreateController extends Controller
 
         try {
             $id = DB::table('contacto_emergencia')->insertGetId([
-                'N_CoE' => $datosModel['N_CoE'],
-                'Csag' => $datosModel['Csag'],
+                'n_coe' => $datosModel['n_coe'],
+                'csag' => $datosModel['csag'],
                 'id_em' => $datosModel['id_em'],
-                'T_CEm' => $datosModel['T_CEm'],
+                't_cem' => $datosModel['t_cem'],
             ]);
 
             if ($id > 0) {

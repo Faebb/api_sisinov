@@ -12,10 +12,10 @@ class empleadoUptadeController extends Controller
     {
         $data = $request->all();
         $validator = Validator::make($request->all(), [
-            'N_CoE' => 'required|string',
-            'Csag' => 'required|string',
-            'T_CEm' => 'required|string',
-            'ID_CEm' => 'required|integer',
+            'n_coe' => 'required|string',
+            'csag' => 'required|string',
+            't_cem' => 'required|string',
+            'id_cem' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -33,11 +33,11 @@ class empleadoUptadeController extends Controller
             $datosModel = $request->all();
             try {
                 $affectedRows = DB::table('contacto_emergencia')
-                    ->where('ID_CEm', $datosModel['ID_CEm'])
+                    ->where('id_cem', $datosModel['id_cem'])
                     ->update([
-                        'N_CoE' => $datosModel['N_CoE'],
-                        'Csag' => $datosModel['Csag'],
-                        'T_CEm' => $datosModel['T_CEm'],
+                        'n_coe' => $datosModel['n_coe'],
+                        'csag' => $datosModel['csag'],
+                        't_cem' => $datosModel['t_cem'],
                     ]);
 
                 if ($affectedRows > 0) {
@@ -367,5 +367,42 @@ class empleadoUptadeController extends Controller
             ], 401);
         }
     }
-    
+
+    public function deletecontemg(Request $request)
+    {
+
+        $data = $request->all();
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            if ($data !== null && isset($data['id_cem'])) {
+                $id = $data['id_cem'];
+                $deleted = DB::table('contacto_emergencia')->where('id_cem', $id)->delete();
+
+                if ($deleted > 0) {
+                    return response()->json([
+                        'error' => false,
+                        'message' => 'Contacto de emergencia eliminado con éxito',
+                    ]);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'Ocurrió un error al eliminar el contacto de emergencia',
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Error en el contenido JSON o falta el parámetro "id"',
+                ]);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
+    }
 }

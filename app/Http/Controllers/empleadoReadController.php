@@ -105,7 +105,7 @@ class empleadoReadController extends Controller
                 try {
                     $result = DB::table('contacto_emergencia')
                         ->where('id_em', $id)
-                        ->get(['ID_CEm', 'N_CoE', 'Csag', 'T_CEm']);
+                        ->get(['id_cem', 'n_coe', 'csag', 't_cem']);
 
                     if ($result->isEmpty()) {
 
@@ -605,7 +605,7 @@ class empleadoReadController extends Controller
         if (app(tokenController::class)->token($token)) {
             try {
 
-                $result = DB::table('contacto_emergencia')->where('T_CEm', $t_cem)->get();
+                $result = DB::table('contacto_emergencia')->where('t_cem', $t_cem)->get();
 
                 if ($result->isEmpty()) {
                     return response()->json([
