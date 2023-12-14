@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Rh;
 use App\Models\Rol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -241,6 +242,47 @@ class empleadoReadController extends Controller
                     'error' => true,
                     'status' => 'error',
                     'message' => 'Error al buscar el rol: ' . $e->getMessage(),
+                    'data' => [],
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'error' => true,
+                'status' => 'error',
+                'message' => 'No autorizado',
+                'data' => [],
+            ], 401);
+        }
+    }
+    public function rh(Request $request)
+    {
+        $data = $request->all();
+        $token = $data['nToken'];
+
+        if (app(tokenController::class)->token($token)) {
+            try {
+                $rol = Rh::all();
+
+                if ($rol->isEmpty()) {
+                    return response()->json([
+                        'error' => true,
+                        'status' => 'error',
+                        'message' => 'No se encontraron grupos sangineos',
+                        'data' => [],
+                    ], 404);
+                } else {
+                    return response()->json([
+                        'error' => false,
+                        'status' => 'success',
+                        'message' => 'Grupos sanguineos encontrados correctamente',
+                        'data' => $rol,
+                    ], 200);
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'status' => 'error',
+                    'message' => 'Error al buscar el grupo sangineo: ' . $e->getMessage(),
                     'data' => [],
                 ], 500);
             }

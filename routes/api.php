@@ -102,6 +102,7 @@ Route::group([], function(){
     Route::get('/readempleadoestado/{id}',[empleadoReadController::class, 'readempleadoestado']);
     Route::post('/readperfil', [empleadoReadController::class, 'readperfil']);
     Route::post('/rol', [empleadoReadController::class, 'rol']);
+    Route::post('/rh', [empleadoReadController::class, 'rh']);
     //metodos put
     Route::put('/updatecontemg', [empleadoUptadeController::class, 'updatecontemg']);
     Route::put('updateempleadoinfoone',[empleadoUptadeController::class, 'updateempleadoinfoone']);
