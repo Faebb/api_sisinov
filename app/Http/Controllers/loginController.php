@@ -223,7 +223,7 @@ class loginController extends Controller
                 return response()->json([
                     'error' => false,
                     'status' => 'error',
-                    'message' => 'No se encontraron Empresas',
+                    'message' => 'No se encontro empleado',
                     'data' => [],
                 ], 403);
             }
@@ -234,4 +234,28 @@ class loginController extends Controller
             ]);
         }
     } 
-}
+
+    public function recuperarPassword(Request $request, $id) {
+        $data = $request->all();
+        $passw = $data['password'];
+        $passwEncriptada = bcrypt($passw);
+
+        $affected = DB::table('login')
+                    ->where('id_em', $id)
+                    ->update(['passw' => $passwEncriptada]);
+
+                if ($affected) {
+                    return response()->json([
+                        'error' => false,
+                        'message' => 'Contraseña recuperada',
+                        'respond' => $affected,
+                    ]);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'Error: No se recupero la contraseña',
+                        'respond' => $affected,
+                    ]);
+                }
+            }
+        }
