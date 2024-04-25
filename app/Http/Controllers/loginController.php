@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Token;
 use Illuminate\Http\Request;
+use App\Models\Empresa;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\tokenController;
 use Illuminate\Support\Facades\Hash;
@@ -198,4 +199,39 @@ class loginController extends Controller
             ], 401);
         }
     }
+    public function validaEmpleado(Request $request){
+        $data = $request->all();
+        $documento = $data['documento'];
+        $eml_em = $data['eml_em'];
+        
+        try {
+            $empleado = DB::table('empleado')
+            ->where('empleado.documento', $documento)
+            ->where('empleado.eml_em', $eml_em)
+            ->where('empleado.estado', 0)
+            ->select('empleado.id_em')
+            ->first();
+
+            if($empleado){
+                return response()->json([
+                    'error' => false,
+                    'status' => 'success',
+                    'message' => 'El empleado fue encontrado',
+                    'data' => $empleado
+                ], 200);
+            } else {
+                return response()->json([
+                    'error' => false,
+                    'status' => 'error',
+                    'message' => 'No se encontraron Empresas',
+                    'data' => [],
+                ], 403);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Método de solicitud no válido',
+            ]);
+        }
+    } 
 }

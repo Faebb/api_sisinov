@@ -63,6 +63,7 @@ Route::group([], function () {
 Route::group([], function(){
     //metodos post
     Route::post('/login', [loginController::class, 'login']);
+    Route::post('/validaempleado', [loginController::class, 'validaEmpleado']);
     Route::post('/verifpass', [loginController::class, 'verifpass']);
     Route::post('/changepass' , [loginController::class, 'changepass']);
 })->name('Login'); 
